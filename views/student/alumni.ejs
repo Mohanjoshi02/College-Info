@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alumni Network - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-users me-2"></i>Alumni Network</h1>
+        <p class="welcome-text">Connect with MIT ADT graduates</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <div class="row g-3">
+      <% alumni.forEach(a => { %>
+      <div class="col-md-4">
+        <div class="module-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div style="width:48px;height:48px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1.1rem;">
+              <%= a.name.charAt(0) %>
+            </div>
+            <div>
+              <div class="card-title mb-0"><%= a.name %></div>
+              <div class="card-meta">Class of <%= a.graduationYear %></div>
+            </div>
+          </div>
+          <div class="card-meta"><i class="fas fa-building me-1"></i><%= a.company %></div>
+          <div class="card-meta"><i class="fas fa-briefcase me-1"></i><%= a.jobRole %></div>
+          <% if (a.linkedin) { %>
+          <a href="<%= a.linkedin %>" target="_blank" class="btn-outline mt-3" style="font-size:0.82rem;">
+            <i class="fab fa-linkedin me-1"></i>LinkedIn Profile
+          </a>
+          <% } %>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

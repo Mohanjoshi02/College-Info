@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-file-alt me-2"></i>Resume Builder</h1>
+        <p class="welcome-text">Build your professional resume</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <div class="row g-4">
+      <!-- Form -->
+      <div class="col-md-5">
+        <div class="card">
+          <div class="card-header"><i class="fas fa-edit"></i>Enter Your Details</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="rName" placeholder="Your full name" value="<%= user.name %>">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" id="rEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="text" class="form-control" id="rPhone" placeholder="+91 XXXXX XXXXX">
+            </div>
+            <div class="form-group">
+              <label class="form-label">GitHub Profile URL</label>
+              <input type="text" class="form-control" id="rGithub" placeholder="https://github.com/username">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Skills (comma separated)</label>
+              <textarea class="form-control" id="rSkills" rows="2" placeholder="Python, Java, React, SQL..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Projects</label>
+              <textarea class="form-control" id="rProjects" rows="3" placeholder="Project name - description&#10;Project name - description"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Certifications</label>
+              <textarea class="form-control" id="rCerts" rows="2" placeholder="AWS Cloud Practitioner&#10;Google Data Analytics"></textarea>
+            </div>
+            <button class="btn-success w-100" onclick="generateResume()">
+              <i class="fas fa-magic me-1"></i>Generate Resume
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="col-md-7">
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-eye me-2"></i>Resume Preview
+            <button onclick="printResume()" class="btn-outline ms-3" style="font-size:0.78rem;padding:3px 10px;color:white;border-color:white;">
+              <i class="fas fa-download me-1"></i>Download
+            </button>
+          </div>
+          <div class="card-body" id="resumePreview">
+            <div class="resume-preview" id="resumeContent">
+              <div style="text-align:center;margin-bottom:20px;">
+                <h2 id="pName" style="color:#1e3a8a;font-size:1.6rem;margin-bottom:4px;">Your Name</h2>
+                <p id="pContact" style="color:#6b7280;font-size:0.9rem;">email@example.com | +91 XXXXX XXXXX</p>
+                <p id="pGithub" style="color:#3b82f6;font-size:0.85rem;"></p>
+              </div>
+              <div class="resume-section">
+                <h4><i class="fas fa-graduation-cap me-2"></i>Education</h4>
+                <p style="font-size:0.9rem;"><strong>B.Tech Computer Engineering</strong><br>MIT ADT University, Pune | 2022 – 2026</p>
+              </div>
+              <div class="resume-section">
+                <h4><i class="fas fa-tools me-2"></i>Skills</h4>
+                <p id="pSkills" style="font-size:0.9rem;">—</p>
+              </div>
+              <div class="resume-section">
+                <h4><i class="fas fa-project-diagram me-2"></i>Projects</h4>
+                <div id="pProjects" style="font-size:0.9rem;">—</div>
+              </div>
+              <div class="resume-section">
+                <h4><i class="fas fa-certificate me-2"></i>Certifications</h4>
+                <div id="pCerts" style="font-size:0.9rem;">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function generateResume() {
+  document.getElementById('pName').textContent = document.getElementById('rName').value || 'Your Name';
+  const email = document.getElementById('rEmail').value;
+  const phone = document.getElementById('rPhone').value;
+  document.getElementById('pContact').textContent = [email, phone].filter(Boolean).join(' | ') || 'email | phone';
+  const github = document.getElementById('rGithub').value;
+  document.getElementById('pGithub').textContent = github ? 'GitHub: ' + github : '';
+  document.getElementById('pSkills').textContent = document.getElementById('rSkills').value || '—';
+  const projects = document.getElementById('rProjects').value;
+  document.getElementById('pProjects').innerHTML = projects
+    ? projects.split('\n').map(p => `<p style="margin-bottom:4px;">• ${p}</p>`).join('')
+    : '—';
+  const certs = document.getElementById('rCerts').value;
+  document.getElementById('pCerts').innerHTML = certs
+    ? certs.split('\n').map(c => `<p style="margin-bottom:4px;">• ${c}</p>`).join('')
+    : '—';
+}
+function printResume() {
+  const content = document.getElementById('resumeContent').innerHTML;
+  const win = window.open('', '_blank');
+  win.document.write(`<html><head><title>Resume - MIT ADT</title>
+    <style>body{font-family:'Times New Roman',serif;padding:30px;max-width:800px;margin:auto;}
+    h2{color:#1e3a8a;} h4{color:#1e3a8a;border-bottom:1px solid #1e3a8a;padding-bottom:4px;margin-bottom:8px;}
+    </style></head><body>${content}</body></html>`);
+  win.document.close();
+  win.print();
+}
+</script>
+</body>
+</html>

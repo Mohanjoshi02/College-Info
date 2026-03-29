@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Problem - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-exclamation-circle me-2"></i>Report a Problem</h1>
+        <p class="welcome-text">Submit issues to faculty for resolution</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <% if (success) { %>
+      <div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Your report has been submitted successfully!</div>
+    <% } %>
+
+    <div class="card">
+      <div class="card-header"><i class="fas fa-plus"></i>Submit New Report</div>
+      <div class="card-body">
+        <form method="POST" action="/student/report">
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Your Name</label>
+              <input type="text" class="form-control" value="<%= user.name %>" disabled>
+            </div>
+            <div class="form-col">
+              <label class="form-label">Problem Category</label>
+              <select class="form-control" name="category" required>
+                <option value="">-- Select Category --</option>
+                <% ['Academic','Attendance','Infrastructure','Technical','Fee'].forEach(c => { %>
+                  <option value="<%= c %>"><%= c %></option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-control" name="date" required value="<%= new Date().toISOString().split('T')[0] %>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" rows="4" required placeholder="Describe your problem in detail..."></textarea>
+          </div>
+          <button type="submit" class="btn-success"><i class="fas fa-paper-plane me-1"></i>Submit Report</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- My Reports -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-list"></i>My Submitted Reports</div>
+      <div class="card-body">
+        <% if (reports.length === 0) { %>
+          <p class="text-center text-muted py-3">No reports submitted yet.</p>
+        <% } else { %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>Category</th><th>Description</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+              <% reports.forEach(r => { %>
+              <tr>
+                <td><span class="badge badge-info"><%= r.category %></span></td>
+                <td style="max-width:250px;"><%= r.description %></td>
+                <td><%= new Date(r.date).toLocaleDateString() %></td>
+                <td><span class="badge badge-<%= r.status === 'Pending' ? 'pending' : 'resolved' %>"><%= r.status %></span></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

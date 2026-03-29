@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-home me-2"></i>Student Dashboard</h1>
+        <p class="welcome-text">Welcome back, <%= user.name %>!</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-number"><%= assignments.length %></div>
+          <div class="stat-label"><i class="fas fa-tasks me-1"></i>Assignments</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-number"><%= attendance.length %></div>
+          <div class="stat-label"><i class="fas fa-calendar-check me-1"></i>Subjects Tracked</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-number"><%= notices.length %></div>
+          <div class="stat-label"><i class="fas fa-bell me-1"></i>Notices</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-number" style="color:#10b981;">Paid</div>
+          <div class="stat-label"><i class="fas fa-credit-card me-1"></i>Fee Status</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assignments -->
+    <div id="assignments" class="card card-assignments">
+      <div class="card-header card-header-assignments"><i class="fas fa-tasks"></i>My Assignments</div>
+      <div class="card-body">
+        <% if (assignments.length === 0) { %>
+          <p class="text-center text-muted py-3">No assignments available.</p>
+        <% } else { %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>Subject</th><th>Title</th><th>Due Date</th><th>Status</th><th>Download</th></tr></thead>
+            <tbody>
+              <% assignments.forEach(a => {
+                const due = new Date(a.dueDate);
+                const overdue = due < new Date();
+              %>
+              <tr>
+                <td><strong><%= a.subject %></strong></td>
+                <td><%= a.title %></td>
+                <td class="<%= overdue ? 'overdue' : '' %>"><%= due.toLocaleDateString() %></td>
+                <td>
+                  <% if (overdue) { %>
+                    <span class="badge badge-danger">Overdue</span>
+                  <% } else { %>
+                    <span class="badge badge-success">Active</span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (a.pdfFile) { %>
+                    <a href="/uploads/<%= a.pdfFile %>" target="_blank" class="btn-outline" style="font-size:0.8rem;padding:4px 10px;">
+                      <i class="fas fa-download me-1"></i>PDF
+                    </a>
+                  <% } else { %>
+                    <span class="text-muted" style="font-size:0.82rem;">No file</span>
+                  <% } %>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Attendance -->
+    <div id="attendance" class="card card-attendance">
+      <div class="card-header card-header-attendance"><i class="fas fa-calendar-check"></i>My Attendance</div>
+      <div class="card-body">
+        <% if (attendance.length === 0) { %>
+          <p class="text-center text-muted py-3">No attendance records yet.</p>
+        <% } else { %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>Subject</th><th>Total Classes</th><th>Attended</th><th>Percentage</th><th>Status</th><th>File</th></tr></thead>
+            <tbody>
+              <% attendance.forEach(r => {
+                const pct = r.percentage || 0;
+                const low = pct < 75;
+              %>
+              <tr>
+                <td><strong><%= r.subject %></strong></td>
+                <td><%= r.totalClasses %></td>
+                <td><%= r.attendedClasses %></td>
+                <td class="<%= low ? 'low-attendance' : '' %>"><%= pct.toFixed(1) %>%</td>
+                <td>
+                  <% if (low) { %>
+                    <span class="badge badge-danger"><i class="fas fa-exclamation-triangle me-1"></i>Low Attendance</span>
+                  <% } else { %>
+                    <span class="badge badge-success">Good</span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (r.supportFile) { %>
+                    <a href="/uploads/<%= r.supportFile %>" target="_blank" class="btn-outline" style="font-size:0.8rem;padding:4px 10px;">
+                      <i class="fas fa-eye me-1"></i>View
+                    </a>
+                  <% } else { %><span class="text-muted" style="font-size:0.82rem;">—</span><% } %>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Notices -->
+    <div id="notices" class="card card-notices">
+      <div class="card-header card-header-notices"><i class="fas fa-bell"></i>Latest Notices</div>
+      <div class="card-body">
+        <% if (notices.length === 0) { %>
+          <p class="text-center text-muted py-3">No notices available.</p>
+        <% } else { %>
+          <% notices.forEach(n => { %>
+          <div class="alert alert-info mb-3">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="mb-1"><i class="fas fa-info-circle me-2"></i><strong><%= n.title %></strong></h6>
+                <p class="mb-1" style="font-size:0.9rem;"><%= n.message %></p>
+              </div>
+              <small class="text-muted ms-3" style="white-space:nowrap;"><i class="fas fa-clock me-1"></i><%= new Date(n.createdAt).toLocaleDateString() %></small>
+            </div>
+          </div>
+          <% }); %>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Fee Status -->
+    <div id="fees" class="card card-fees">
+      <div class="card-header card-header-fees"><i class="fas fa-credit-card"></i>Fee Status</div>
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <table class="table table-sm" style="margin-top:0;">
+              <tr><td><strong>Total Fee:</strong></td><td>₹<%= feeData.totalFee.toLocaleString() %></td></tr>
+              <tr><td><strong>Paid Amount:</strong></td><td class="text-success fw-bold">₹<%= feeData.paidAmount.toLocaleString() %></td></tr>
+              <tr><td><strong>Remaining Fee:</strong></td><td class="text-success fw-bold">₹<%= feeData.remainingAmount %></td></tr>
+            </table>
+          </div>
+          <div class="col-md-6 text-center">
+            <span class="badge badge-success" style="font-size:1.1rem;padding:10px 24px;">
+              <i class="fas fa-check-circle me-2"></i>All Fees Paid
+            </span>
+            <div class="progress mt-3">
+              <div class="progress-bar" style="width:100%;">100%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

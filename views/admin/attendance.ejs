@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Attendance - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/faculty-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-calendar-check me-2"></i>Manage Attendance</h1>
+        <p class="welcome-text">Update and track student attendance</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <% if (success) { %>
+      <div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Attendance updated successfully!</div>
+    <% } %>
+
+    <div class="card">
+      <div class="card-header"><i class="fas fa-edit"></i>Update Student Attendance</div>
+      <div class="card-body">
+        <form method="POST" action="/admin/attendance" enctype="multipart/form-data">
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Select Student</label>
+              <select class="form-control" name="studentId" required>
+                <option value="">-- Select Student --</option>
+                <% students.forEach(s => { %>
+                  <option value="<%= s._id %>"><%= s.name %> (<%= s.email %>)</option>
+                <% }); %>
+              </select>
+            </div>
+            <div class="form-col">
+              <label class="form-label">Subject</label>
+              <select class="form-control" name="subject" required>
+                <option value="">-- Select Subject --</option>
+                <% SUBJECTS.forEach(s => { %>
+                  <option value="<%= s %>"><%= s %></option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Total Classes</label>
+              <input type="number" class="form-control" name="totalClasses" min="0" required placeholder="e.g. 40">
+            </div>
+            <div class="form-col">
+              <label class="form-label">Attended Classes</label>
+              <input type="number" class="form-control" name="attendedClasses" min="0" required placeholder="e.g. 32">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Upload Supporting File (optional)</label>
+            <input type="file" class="form-control" name="supportFile" accept=".pdf,.jpg,.jpeg,.png">
+            <small class="text-muted">Attendance sheet or proof (PDF/JPG/PNG, max 10MB)</small>
+          </div>
+          <div class="alert alert-info mt-2" style="font-size:0.85rem;">
+            <i class="fas fa-info-circle me-2"></i>Percentage is auto-calculated. Students below 75% will be flagged.
+          </div>
+          <button type="submit" class="btn-success"><i class="fas fa-save me-1"></i>Update Attendance</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const total = parseInt(document.querySelector('[name="totalClasses"]').value);
+    const attended = parseInt(document.querySelector('[name="attendedClasses"]').value);
+    if (attended > total) { e.preventDefault(); alert('Attended classes cannot exceed total classes!'); }
+  });
+</script>
+</body>
+</html>

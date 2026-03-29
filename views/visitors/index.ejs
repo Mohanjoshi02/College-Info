@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Information - MIT ADT University</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-blue);">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap me-2"></i>MIT ADT University
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#gallery">Gallery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#location">Location</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">
+                            <i class="fas fa-sign-in-alt me-1"></i>Portal Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="visitors-hero">
+        <div class="container">
+            <h1>Welcome to MIT ADT University</h1>
+            <p class="lead">A World-Class Institution for Higher Education in Pune, India</p>
+            <a href="/login" class="btn btn-light btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i>Access Campus Portal
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h2 class="mb-4" style="color: var(--primary-blue);">About MIT ADT University</h2>
+                    <p class="lead">
+                        MIT ADT University is a premier educational institution located in Pune, Maharashtra, India. 
+                        Established with a vision to provide world-class education, we offer undergraduate, postgraduate, 
+                        and doctoral programs across various disciplines.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-graduation-cap fa-3x mb-3" style="color: var(--primary-blue);"></i>
+                            <h5 class="card-title">Academic Excellence</h5>
+                            <p class="card-text">
+                                Comprehensive programs designed to meet industry standards and global requirements.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-microscope fa-3x mb-3" style="color: var(--primary-blue);"></i>
+                            <h5 class="card-title">Research & Innovation</h5>
+                            <p class="card-text">
+                                State-of-the-art research facilities and innovation labs for cutting-edge discoveries.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-globe fa-3x mb-3" style="color: var(--primary-blue);"></i>
+                            <h5 class="card-title">Global Exposure</h5>
+                            <p class="card-text">
+                                International collaborations and exchange programs with renowned universities worldwide.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-5" style="background-color: var(--gray-100);">
+        <div class="container">
+            <h2 class="text-center mb-5" style="color: var(--primary-blue);">Campus Gallery</h2>
+            
+            <!-- Image Setup Notice -->
+            <div class="alert alert-info text-center mb-4" id="imageNotice">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Note:</strong> To view campus images, please add the 6 campus photos to the 
+                <code>public/images/</code> folder. See <strong>HOW_TO_ADD_IMAGES.txt</strong> for instructions.
+            </div>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="/images/campus-1.jpg" alt="MIT ADT Campus Main Building" class="img-fluid">
+                    <div class="p-3">
+                        <h6>Main Campus Building</h6>
+                        <p class="text-muted small">The iconic main building of MIT ADT University</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/images/campus-2.jpg" alt="MIT ADT Campus Dome" class="img-fluid">
+                    <div class="p-3">
+                        <h6>Central Dome</h6>
+                        <p class="text-muted small">The magnificent central dome - a landmark of our campus</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/images/campus-3.jpg" alt="MIT ADT Campus Architecture" class="img-fluid">
+                    <div class="p-3">
+                        <h6>Campus Architecture</h6>
+                        <p class="text-muted small">Beautiful architectural design blending tradition with modernity</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/images/campus-4.jpg" alt="MIT ADT University Aerial View" class="img-fluid">
+                    <div class="p-3">
+                        <h6>Aerial Campus View</h6>
+                        <p class="text-muted small">Bird's eye view of the sprawling MIT ADT campus</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/images/campus-5.jpg" alt="MIT ADT Campus Facilities" class="img-fluid">
+                    <div class="p-3">
+                        <h6>Campus Facilities</h6>
+                        <p class="text-muted small">Modern facilities and infrastructure for holistic education</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/images/campus-6.jpg" alt="MIT ADT University Grounds" class="img-fluid">
+                    <div class="p-3">
+                        <h6>University Grounds</h6>
+                        <p class="text-muted small">Expansive green spaces and recreational areas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section id="location" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5" style="color: var(--primary-blue);">Visit Our Campus</h2>
+            
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-map-marker-alt me-2" style="color: var(--primary-blue);"></i>
+                                Campus Address
+                            </h5>
+                            <p class="card-text">
+                                <strong>MIT ADT University</strong><br>
+                                Loni Kalbhor, Pune - 412201<br>
+                                Maharashtra, India
+                            </p>
+                            
+                            <h6 class="mt-4">Contact Information</h6>
+                            <p class="card-text">
+                                <i class="fas fa-phone me-2"></i>+91-20-3051-4000<br>
+                                <i class="fas fa-envelope me-2"></i>info@mituniversity.edu.in<br>
+                                <i class="fas fa-globe me-2"></i>www.mituniversity.edu.in
+                            </p>
+                            
+                            <h6 class="mt-4">Campus Timings</h6>
+                            <p class="card-text">
+                                <strong>Monday - Friday:</strong> 8:00 AM - 6:00 PM<br>
+                                <strong>Saturday:</strong> 8:00 AM - 2:00 PM<br>
+                                <strong>Sunday:</strong> Closed
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-map me-2" style="color: var(--primary-blue);"></i>
+                                Campus Location
+                            </h5>
+                            
+                            <!-- Google Maps Embed -->
+                            <div class="ratio ratio-16x9">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3785.7234567890123!2d73.9876543210987!3d18.4567890123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2ea123456789a%3A0x1234567890abcdef!2sMIT%20ADT%20University!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
+                                    style="border:0;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <a href="https://goo.gl/maps/mitadt" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-external-link-alt me-1"></i>Open in Google Maps
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4" style="background-color: var(--primary-blue); color: white;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>MIT ADT University</h6>
+                    <p class="mb-0">Empowering minds, shaping futures.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="/login" class="btn btn-light btn-sm">
+                        <i class="fas fa-sign-in-alt me-1"></i>Access Portal
+                    </a>
+                </div>
+            </div>
+            <hr class="my-3" style="border-color: rgba(255,255,255,0.3);">
+            <div class="text-center">
+                <small>&copy; 2024 MIT ADT University. All rights reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Check if images are loaded and hide notice
+        window.addEventListener('load', function() {
+            const images = document.querySelectorAll('.gallery-item img');
+            let imagesLoaded = 0;
+            
+            images.forEach(img => {
+                if (img.complete && img.naturalHeight !== 0) {
+                    imagesLoaded++;
+                }
+            });
+            
+            // If at least 3 images loaded successfully, hide the notice
+            if (imagesLoaded >= 3) {
+                const notice = document.getElementById('imageNotice');
+                if (notice) {
+                    notice.style.display = 'none';
+                }
+            }
+        });
+        
+        // Handle image load errors - show placeholder
+        document.querySelectorAll('.gallery-item img').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)';
+                this.style.display = 'flex';
+                this.style.alignItems = 'center';
+                this.style.justifyContent = 'center';
+                this.alt = '📸 Image not found - Please add ' + this.src.split('/').pop();
+            });
+        });
+    </script>
+</body>
+</html>

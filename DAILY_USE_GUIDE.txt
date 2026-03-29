@@ -1,0 +1,213 @@
+═══════════════════════════════════════════════════════════════════
+  📅 MIT ADT PORTAL - DAILY USE GUIDE
+═══════════════════════════════════════════════════════════════════
+
+This guide explains how to use your portal every day.
+
+═══════════════════════════════════════════════════════════════════
+  🚀 STARTING THE PORTAL (EVERY TIME)
+═══════════════════════════════════════════════════════════════════
+
+METHOD 1: Using Batch File (EASIEST)
+   
+   1. Go to project folder:
+      C:\Users\mohan\OneDrive\Desktop\dt prototype 2
+   
+   2. Double-click: START_SERVER.bat
+   
+   3. A window will open showing:
+      "MIT ADT Smart Campus Portal running on port 3000"
+   
+   4. Keep this window OPEN (minimize it if you want)
+   
+   5. Open browser and go to: http://localhost:3000
+
+METHOD 2: Using Desktop Shortcut (RECOMMENDED)
+   
+   1. First time only: Double-click CREATE_DESKTOP_SHORTCUT.bat
+   
+   2. A shortcut "MIT ADT Portal" will appear on desktop
+   
+   3. From now on, just double-click desktop shortcut!
+   
+   4. Server starts automatically
+   
+   5. Open browser: http://localhost:3000
+
+METHOD 3: Using PowerShell (MANUAL)
+   
+   1. Open PowerShell in project folder
+   
+   2. Type: npm start
+   
+   3. Press Enter
+   
+   4. Wait for "running on port 3000" message
+   
+   5. Open browser: http://localhost:3000
+
+═══════════════════════════════════════════════════════════════════
+  💻 USING THE PORTAL
+═══════════════════════════════════════════════════════════════════
+
+Once server is running and browser is open:
+
+AS STUDENT:
+   1. Login: student@mitadt.edu / 123456
+   2. View assignments
+   3. Check attendance
+   4. Read notices
+   5. Check fee status
+   6. Logout when done
+
+AS ADMIN:
+   1. Login: admin@mitadt.edu / admin123
+   2. Add new assignments
+   3. Post notices
+   4. Update student attendance
+   5. Manage portal
+   6. Logout when done
+
+CREATE NEW USERS:
+   1. Go to: http://localhost:3000/signup
+   2. Fill in details
+   3. Choose role (Student/Admin)
+   4. Create account
+   5. Login with new credentials
+
+═══════════════════════════════════════════════════════════════════
+  🛑 STOPPING THE PORTAL (WHEN DONE)
+═══════════════════════════════════════════════════════════════════
+
+OPTION 1: Close Server Window
+   → Simply close the black/blue terminal window
+   → Server stops immediately
+
+OPTION 2: Press Ctrl + C
+   → Go to server window
+   → Press Ctrl + C
+   → Type 'Y' if asked
+   → Server stops gracefully
+
+OPTION 3: Just Leave It Running
+   → If you'll use it again soon
+   → Keep server window minimized
+   → Website stays accessible
+
+═══════════════════════════════════════════════════════════════════
+  📅 TYPICAL DAILY WORKFLOW
+═══════════════════════════════════════════════════════════════════
+
+MORNING:
+08:00 AM - Double-click START_SERVER.bat
+08:01 AM - Open browser: http://localhost:3000
+08:02 AM - Login and start working
+         - Minimize server window
+
+DURING DAY:
+         - Use portal as needed
+         - Add assignments, notices
+         - Check attendance
+         - Manage students
+         - Server runs in background
+
+EVENING:
+06:00 PM - Logout from portal
+06:01 PM - Close browser
+06:02 PM - Close server window (or press Ctrl+C)
+         - Server stops
+
+NEXT DAY:
+         - Repeat the process!
+
+═══════════════════════════════════════════════════════════════════
+  💡 BEST PRACTICES
+═══════════════════════════════════════════════════════════════════
+
+✓ Create desktop shortcut for easy access
+✓ Bookmark http://localhost:3000 in browser
+✓ Keep server window minimized while working
+✓ Don't close server window while using website
+✓ Always logout before closing
+✓ Stop server when done for the day
+✓ Backup your data regularly
+
+═══════════════════════════════════════════════════════════════════
+  ⚡ QUICK COMMANDS
+═══════════════════════════════════════════════════════════════════
+
+Start Server:     Double-click START_SERVER.bat
+Stop Server:      Ctrl + C in server window
+Open Website:     http://localhost:3000
+Open Images:      Double-click OPEN_IMAGES_FOLDER.bat
+Create Shortcut:  Double-click CREATE_DESKTOP_SHORTCUT.bat
+
+═══════════════════════════════════════════════════════════════════
+  🔧 MAINTENANCE
+═══════════════════════════════════════════════════════════════════
+
+WEEKLY:
+□ Backup database (if using local MongoDB)
+□ Check for updates
+□ Clear old notices/assignments
+
+MONTHLY:
+□ Review user accounts
+□ Update campus images if needed
+□ Check system performance
+
+AS NEEDED:
+□ Add new students/admins
+□ Update attendance records
+□ Post important notices
+□ Add assignments
+
+═══════════════════════════════════════════════════════════════════
+  ❓ COMMON QUESTIONS
+═══════════════════════════════════════════════════════════════════
+
+Q: Do I need internet to use the portal?
+A: Only if using MongoDB Atlas. Local MongoDB works offline.
+
+Q: Can I access from another computer?
+A: Yes, but need to configure network access. See INSTALLATION_GUIDE.md
+
+Q: How long does server take to start?
+A: Usually 3-5 seconds
+
+Q: Can I use while server is starting?
+A: No, wait for "running on port 3000" message
+
+Q: What if I forget to stop server?
+A: It's OK, but better to stop when done to free resources
+
+Q: Can multiple people use at same time?
+A: Yes! Multiple browsers can access simultaneously
+
+Q: Will my data be saved?
+A: Yes, all data is saved in MongoDB database
+
+Q: What if computer restarts?
+A: Just start server again. Data is safe in database.
+
+═══════════════════════════════════════════════════════════════════
+  🎯 REMEMBER
+═══════════════════════════════════════════════════════════════════
+
+The portal is like any desktop application:
+- You need to "open" it (start server) to use it
+- You can "close" it (stop server) when done
+- Your data is always saved
+- Start it again whenever you need it
+
+It's that simple! 🚀
+
+═══════════════════════════════════════════════════════════════════
+
+📌 BOOKMARK THIS:
+   
+   START: Double-click START_SERVER.bat
+   OPEN:  http://localhost:3000
+   STOP:  Close server window
+
+═══════════════════════════════════════════════════════════════════

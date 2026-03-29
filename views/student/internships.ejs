@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internships - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-briefcase me-2"></i>Internship Opportunities</h1>
+        <p class="welcome-text">Kickstart your career journey</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <% const internships = [
+      { company: 'TCS', role: 'Software Developer Intern', skills: 'Java, SQL, Spring Boot', deadline: 'April 30, 2025', link: 'https://tcs.com/careers' },
+      { company: 'Infosys', role: 'Data Science Intern', skills: 'Python, ML, Pandas', deadline: 'May 15, 2025', link: 'https://infosys.com/careers' },
+      { company: 'Wipro', role: 'Web Development Intern', skills: 'React, Node.js, MongoDB', deadline: 'April 20, 2025', link: 'https://wipro.com/careers' },
+      { company: 'Accenture', role: 'Cloud Intern', skills: 'AWS, Azure, Docker', deadline: 'May 5, 2025', link: 'https://accenture.com/careers' },
+      { company: 'Cognizant', role: 'AI/ML Intern', skills: 'Python, TensorFlow, NLP', deadline: 'June 1, 2025', link: 'https://cognizant.com/careers' },
+      { company: 'HCL', role: 'Cybersecurity Intern', skills: 'Networking, Linux, Security', deadline: 'May 20, 2025', link: 'https://hcltech.com/careers' }
+    ]; %>
+
+    <div class="row g-3">
+      <% internships.forEach(i => { %>
+      <div class="col-md-4">
+        <div class="module-card" style="border-top:4px solid #10b981;">
+          <div class="card-title"><%= i.company %></div>
+          <div class="card-meta mb-1"><i class="fas fa-user-tie me-1"></i><strong><%= i.role %></strong></div>
+          <div class="card-meta"><i class="fas fa-tools me-1"></i><%= i.skills %></div>
+          <div class="card-meta mt-1"><i class="fas fa-calendar-times me-1"></i>Deadline: <strong><%= i.deadline %></strong></div>
+          <a href="<%= i.link %>" target="_blank" class="btn-outline mt-3" style="font-size:0.82rem;">
+            <i class="fas fa-paper-plane me-1"></i>Apply Now
+          </a>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

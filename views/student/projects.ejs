@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Showcase - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-project-diagram me-2"></i>Project Showcase</h1>
+        <p class="welcome-text">Share your work with the community</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <!-- Submit Project -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-plus"></i>Add Your Project</div>
+      <div class="card-body">
+        <form method="POST" action="/student/projects">
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Project Title</label>
+              <input type="text" class="form-control" name="title" required placeholder="e.g. Smart Attendance System">
+            </div>
+            <div class="form-col">
+              <label class="form-label">Technologies Used</label>
+              <input type="text" class="form-control" name="technologies" required placeholder="e.g. React, Node.js, MongoDB">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" rows="3" required placeholder="Describe your project..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">GitHub Link</label>
+              <input type="url" class="form-control" name="githubLink" placeholder="https://github.com/...">
+            </div>
+            <div class="form-col">
+              <label class="form-label">Demo Link</label>
+              <input type="url" class="form-control" name="demoLink" placeholder="https://...">
+            </div>
+          </div>
+          <button type="submit" class="btn-success mt-2"><i class="fas fa-plus me-1"></i>Add Project</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <% if (projects.length === 0) { %>
+      <div class="card"><div class="card-body text-center text-muted py-4">No projects yet. Be the first to showcase!</div></div>
+    <% } else { %>
+    <div class="row g-3">
+      <% projects.forEach(p => { %>
+      <div class="col-md-4">
+        <div class="module-card" style="border-top:4px solid #3b82f6;">
+          <div class="card-title"><%= p.title %></div>
+          <div class="card-meta mb-2"><i class="fas fa-user me-1"></i><%= p.studentName %></div>
+          <p style="font-size:0.85rem;color:#374151;margin-bottom:10px;"><%= p.description %></p>
+          <div class="mb-2">
+            <% p.technologies.split(',').forEach(tech => { %>
+              <span class="badge badge-info me-1" style="margin-bottom:4px;"><%= tech.trim() %></span>
+            <% }); %>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <% if (p.githubLink) { %>
+              <a href="<%= p.githubLink %>" target="_blank" class="btn-outline" style="font-size:0.78rem;padding:4px 10px;">
+                <i class="fab fa-github me-1"></i>GitHub
+              </a>
+            <% } %>
+            <% if (p.demoLink) { %>
+              <a href="<%= p.demoLink %>" target="_blank" class="btn-outline" style="font-size:0.78rem;padding:4px 10px;">
+                <i class="fas fa-external-link-alt me-1"></i>Demo
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <% } %>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

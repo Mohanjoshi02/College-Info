@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timetable - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-clock me-2"></i>Class Timetable</h1>
+        <p class="welcome-text">Your weekly schedule</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <!-- Substitute notice (prototype) -->
+    <div class="substitute-notice">
+      <i class="fas fa-info-circle me-2"></i>
+      <strong>Notice:</strong> Substitute faculty assigned for today's class — Engineering Physics (Dr. Mehta → Prof. Kulkarni)
+    </div>
+
+    <!-- Substitute Table (prototype) -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-exchange-alt"></i>Substitute Faculty Today</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>Subject</th><th>Original Faculty</th><th>Substitute Faculty</th><th>Date</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Engineering Physics</td>
+                <td>Dr. Mehta</td>
+                <td><span class="badge badge-warning">Prof. Kulkarni</span></td>
+                <td><%= new Date().toLocaleDateString() %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Timetable -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-table"></i>Weekly Schedule</div>
+      <div class="card-body">
+        <% const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+           days.forEach(day => {
+             const entries = timetable.filter(t => t.day === day);
+             if (entries.length > 0) { %>
+          <h6 class="mb-2 mt-3"><span class="day-badge"><%= day %></span></h6>
+          <div class="table-responsive mb-3">
+            <table class="table">
+              <thead><tr><th>Time</th><th>Subject</th><th>Faculty</th><th>Room</th></tr></thead>
+              <tbody>
+                <% entries.forEach(e => { %>
+                <tr>
+                  <td><strong><%= e.time || '—' %></strong></td>
+                  <td><%= e.subject %></td>
+                  <td><%= e.faculty %></td>
+                  <td><span class="badge badge-info"><%= e.room %></span></td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } }); %>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

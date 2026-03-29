@@ -1,0 +1,114 @@
+═══════════════════════════════════════════════════════════════════
+  MIT ADT SMART CAMPUS PORTAL - QUICK START GUIDE
+═══════════════════════════════════════════════════════════════════
+
+📋 WHAT YOU NEED:
+  ✅ Node.js installed (Already done!)
+  ✅ MongoDB connection (Choose one option below)
+
+═══════════════════════════════════════════════════════════════════
+  OPTION 1: MONGODB ATLAS (RECOMMENDED - 5 MINUTES)
+═══════════════════════════════════════════════════════════════════
+
+1. Go to: https://www.mongodb.com/cloud/atlas/register
+2. Sign up (FREE forever)
+3. Create a FREE cluster (M0 tier)
+4. Create database user:
+   - Username: mitadt_admin
+   - Password: (create a strong password)
+5. Whitelist IP: Click "Allow Access from Anywhere"
+6. Get connection string:
+   - Click "Connect" → "Connect your application"
+   - Copy the connection string
+7. Update .env file:
+   - Open .env file in your project
+   - Replace MONGODB_URI line with:
+     MONGODB_URI=mongodb+srv://mitadt_admin:YOUR_PASSWORD@cluster0.xxxxx.mongodb.net/mitadt_campus
+
+═══════════════════════════════════════════════════════════════════
+  OPTION 2: LOCAL MONGODB (OFFLINE)
+═══════════════════════════════════════════════════════════════════
+
+1. Download: https://www.mongodb.com/try/download/community
+2. Install MongoDB Community Server
+3. Install as Windows Service
+4. No .env changes needed (already configured)
+
+═══════════════════════════════════════════════════════════════════
+  START THE WEBSITE
+═══════════════════════════════════════════════════════════════════
+
+1. Open PowerShell in project folder
+2. Run: npm start
+3. Open browser: http://localhost:3000
+
+═══════════════════════════════════════════════════════════════════
+  TEST ACCOUNTS
+═══════════════════════════════════════════════════════════════════
+
+STUDENT LOGIN:
+  Email: student@mitadt.edu
+  Password: 123456
+
+ADMIN LOGIN:
+  Email: admin@mitadt.edu
+  Password: admin123
+
+═══════════════════════════════════════════════════════════════════
+  ADD CAMPUS IMAGES
+═══════════════════════════════════════════════════════════════════
+
+Place these 6 images in: public/images/
+  - campus-1.jpg
+  - campus-2.jpg
+  - campus-3.jpg
+  - campus-4.jpg
+  - campus-5.jpg
+  - campus-6.jpg
+
+═══════════════════════════════════════════════════════════════════
+  TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════
+
+❌ MongoDB connection error?
+   → Check MongoDB is running (local)
+   → Check connection string in .env (Atlas)
+   → Check IP whitelist (Atlas)
+
+❌ Port 3000 already in use?
+   → Change PORT=3001 in .env file
+
+❌ Images not showing?
+   → Check files are in public/images/
+   → Check filenames match exactly
+
+❌ npm not working?
+   → Restart computer
+   → Open NEW PowerShell window
+
+═══════════════════════════════════════════════════════════════════
+  PAGES TO VISIT
+═══════════════════════════════════════════════════════════════════
+
+Login Page:        http://localhost:3000
+Signup Page:       http://localhost:3000/signup
+Campus Info:       http://localhost:3000/visitors
+Student Dashboard: http://localhost:3000/student (after login)
+Admin Dashboard:   http://localhost:3000/admin (after login)
+
+═══════════════════════════════════════════════════════════════════
+  NEED MORE HELP?
+═══════════════════════════════════════════════════════════════════
+
+Read: INSTALLATION_GUIDE.md (detailed instructions)
+Read: README.md (project overview)
+
+═══════════════════════════════════════════════════════════════════
+
+🎉 YOUR WEBSITE IS RUNNING AT: http://localhost:3000
+
+The server is already started! Just open your browser and visit the URL above.
+
+If you see "MongoDB connection error" in the console, follow Option 1 or 2 above to connect MongoDB.
+
+═══════════════════════════════════════════════════════════════════

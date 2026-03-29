@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Prep - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-user-tie me-2"></i>Interview Preparation</h1>
+        <p class="welcome-text">Ace your technical interviews</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <% const topics = [
+      { name: 'Data Structures', icon: 'fas fa-sitemap', color: '#1e3a8a',
+        questions: ['What is a linked list? Explain types.','Difference between stack and queue.','How does a hash table work?','Explain binary search tree operations.','What is a heap? Min vs Max heap.'] },
+      { name: 'Operating Systems', icon: 'fas fa-desktop', color: '#3b82f6',
+        questions: ['What is a process vs thread?','Explain deadlock and its prevention.','What is virtual memory?','Difference between paging and segmentation.','What is a semaphore?'] },
+      { name: 'DBMS', icon: 'fas fa-database', color: '#10b981',
+        questions: ['What is normalization? Explain 1NF, 2NF, 3NF.','Difference between SQL and NoSQL.','What is a transaction? ACID properties.','Explain indexing in databases.','What is a join? Types of joins.'] },
+      { name: 'Computer Networks', icon: 'fas fa-network-wired', color: '#f59e0b',
+        questions: ['Explain OSI model layers.','What is TCP vs UDP?','How does DNS work?','What is HTTP vs HTTPS?','Explain subnetting.'] },
+      { name: 'OOP Concepts', icon: 'fas fa-cubes', color: '#ef4444',
+        questions: ['What are the 4 pillars of OOP?','Difference between abstraction and encapsulation.','What is polymorphism? Types.','Explain inheritance with example.','What is an interface vs abstract class?'] }
+    ]; %>
+
+    <div class="row g-3">
+      <% topics.forEach(t => { %>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header" style="background:linear-gradient(135deg,<%= t.color %>,<%= t.color %>cc);">
+            <i class="<%= t.icon %> me-2"></i><%= t.name %>
+          </div>
+          <div class="card-body">
+            <ul style="padding-left:18px;margin:0;">
+              <% t.questions.forEach(q => { %>
+              <li style="margin-bottom:8px;font-size:0.88rem;color:#374151;">
+                <i class="fas fa-chevron-right me-1" style="color:<%= t.color %>;font-size:0.7rem;"></i><%= q %>
+              </li>
+              <% }); %>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+
+    <div class="card mt-2">
+      <div class="card-header"><i class="fas fa-lightbulb"></i>Interview Tips</div>
+      <div class="card-body">
+        <div class="row g-3">
+          <% ['Think out loud while solving problems','Practice on whiteboard/paper first','Know your resume projects deeply','Ask clarifying questions','Practice time & space complexity analysis','Review system design basics'].forEach(tip => { %>
+          <div class="col-md-4">
+            <div style="background:var(--light-blue);border-radius:8px;padding:12px;font-size:0.85rem;color:var(--primary);">
+              <i class="fas fa-check-circle me-2"></i><%= tip %>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

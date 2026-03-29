@@ -1,0 +1,150 @@
+═══════════════════════════════════════════════════════════════════
+  📸 HOW TO ADD CAMPUS IMAGES - STEP BY STEP
+═══════════════════════════════════════════════════════════════════
+
+The campus images you shared in the chat need to be saved to your
+computer in the correct folder.
+
+═══════════════════════════════════════════════════════════════════
+  📁 WHERE TO PUT THE IMAGES
+═══════════════════════════════════════════════════════════════════
+
+Folder Location:
+C:\Users\mohan\OneDrive\Desktop\dt prototype 2\public\images\
+
+═══════════════════════════════════════════════════════════════════
+  🖼️ REQUIRED IMAGE FILES
+═══════════════════════════════════════════════════════════════════
+
+You need to save these 6 images with EXACT filenames:
+
+1. campus-1.jpg  (Main campus building - first image you shared)
+2. campus-2.jpg  (Central dome - second image)
+3. campus-3.jpg  (Campus architecture - third image)
+4. campus-4.jpg  (Aerial view - fourth image)
+5. campus-5.jpg  (Campus facilities - fifth image)
+6. campus-6.jpg  (University grounds - sixth image)
+
+IMPORTANT:
+- Filenames must be EXACTLY as shown above
+- All lowercase letters
+- Use .jpg extension (not .JPG or .jpeg)
+- No spaces in filenames
+
+═══════════════════════════════════════════════════════════════════
+  📥 HOW TO SAVE THE IMAGES FROM CHAT
+═══════════════════════════════════════════════════════════════════
+
+METHOD 1: Right-click and Save
+
+1. Scroll up in the chat to find the 6 campus images
+2. Right-click on the FIRST image
+3. Select "Save image as..."
+4. Navigate to: C:\Users\mohan\OneDrive\Desktop\dt prototype 2\public\images\
+5. Name it: campus-1.jpg
+6. Click Save
+7. Repeat for all 6 images (campus-1.jpg through campus-6.jpg)
+
+METHOD 2: Drag and Drop
+
+1. Open File Explorer
+2. Navigate to: C:\Users\mohan\OneDrive\Desktop\dt prototype 2\public\images\
+3. Keep this window open
+4. In the chat, drag each image from chat to the folder
+5. Rename each file to match the required names:
+   - campus-1.jpg
+   - campus-2.jpg
+   - campus-3.jpg
+   - campus-4.jpg
+   - campus-5.jpg
+   - campus-6.jpg
+
+═══════════════════════════════════════════════════════════════════
+  ✅ VERIFY IMAGES ARE SAVED CORRECTLY
+═══════════════════════════════════════════════════════════════════
+
+After saving, check:
+
+1. Open folder: C:\Users\mohan\OneDrive\Desktop\dt prototype 2\public\images\
+
+2. You should see these files:
+   ✓ campus-1.jpg
+   ✓ campus-2.jpg
+   ✓ campus-3.jpg
+   ✓ campus-4.jpg
+   ✓ campus-5.jpg
+   ✓ campus-6.jpg
+   - README.md (this is OK to keep)
+
+3. Check file sizes:
+   - Each image should be between 100KB - 2MB
+   - If file is very small (< 10KB), it might not have saved correctly
+
+4. Check filenames:
+   - All lowercase
+   - No spaces
+   - Exactly as shown above
+
+═══════════════════════════════════════════════════════════════════
+  🔄 AFTER ADDING IMAGES
+═══════════════════════════════════════════════════════════════════
+
+1. No need to restart the server
+2. Just refresh your browser (F5 or Ctrl+F5)
+3. Visit: http://localhost:3000/visitors
+4. Images should now appear in the gallery
+
+═══════════════════════════════════════════════════════════════════
+  🎨 ALTERNATIVE: USE YOUR OWN IMAGES
+═══════════════════════════════════════════════════════════════════
+
+If you want to use different campus images:
+
+1. Find 6 images of MIT ADT campus (from Google, website, etc.)
+2. Save them to: public\images\
+3. Name them: campus-1.jpg through campus-6.jpg
+4. Recommended size: 800x600 pixels or larger
+5. Format: JPG/JPEG
+6. File size: Under 2MB each
+
+═══════════════════════════════════════════════════════════════════
+  ❌ TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════
+
+Problem: Images still not showing
+
+Solutions:
+1. Check filenames are EXACTLY correct (lowercase, no spaces)
+2. Check files are in correct folder: public\images\
+3. Check file extensions are .jpg (not .JPG or .jpeg)
+4. Hard refresh browser: Ctrl + Shift + R or Ctrl + F5
+5. Clear browser cache
+6. Check browser console (F12) for errors
+
+Problem: Broken image icons showing
+
+Solutions:
+1. File might be corrupted - re-download/save the image
+2. Check file size - should be > 10KB
+3. Open image in Windows Photo Viewer to verify it's valid
+
+═══════════════════════════════════════════════════════════════════
+  📸 QUICK CHECKLIST
+═══════════════════════════════════════════════════════════════════
+
+□ Opened folder: public\images\
+□ Saved all 6 images from chat
+□ Named them: campus-1.jpg through campus-6.jpg
+□ All filenames are lowercase
+□ All files are .jpg extension
+□ Refreshed browser (Ctrl+F5)
+□ Visited: http://localhost:3000/visitors
+□ Images now visible in gallery
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 SUMMARY: Save the 6 campus images from the chat to the
+public\images\ folder with exact filenames (campus-1.jpg through
+campus-6.jpg), then refresh your browser!
+
+═══════════════════════════════════════════════════════════════════

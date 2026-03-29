@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Dashboard - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/faculty-sidebar') %>
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-chalkboard-teacher me-2"></i>Faculty Dashboard</h1>
+        <p class="welcome-text">Welcome, <%= user.name %>!</p>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      </form>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3"><div class="stat-card">
+        <div class="stat-number"><%= assignments.length %></div>
+        <div class="stat-label"><i class="fas fa-tasks me-1"></i>Assignments</div>
+      </div></div>
+      <div class="col-md-3"><div class="stat-card">
+        <div class="stat-number"><%= notices.length %></div>
+        <div class="stat-label"><i class="fas fa-bell me-1"></i>Notices</div>
+      </div></div>
+      <div class="col-md-3"><div class="stat-card">
+        <div class="stat-number"><%= students.length %></div>
+        <div class="stat-label"><i class="fas fa-users me-1"></i>Students</div>
+      </div></div>
+      <div class="col-md-3"><div class="stat-card">
+        <div class="stat-number" style="color:<%= reports.filter(r=>r.status==='Pending').length > 0 ? '#ef4444' : '#10b981' %>">
+          <%= reports.filter(r=>r.status==='Pending').length %>
+        </div>
+        <div class="stat-label"><i class="fas fa-exclamation-circle me-1"></i>Pending Reports</div>
+      </div></div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <a href="/admin/assignments" class="text-decoration-none">
+          <div class="module-card text-center" style="border-top:4px solid #1e3a8a;">
+            <i class="fas fa-tasks fa-2x mb-2" style="color:#1e3a8a;"></i>
+            <div class="card-title">Manage Assignments</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="/admin/notices" class="text-decoration-none">
+          <div class="module-card text-center" style="border-top:4px solid #3b82f6;">
+            <i class="fas fa-bell fa-2x mb-2" style="color:#3b82f6;"></i>
+            <div class="card-title">Manage Notices</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="/admin/attendance" class="text-decoration-none">
+          <div class="module-card text-center" style="border-top:4px solid #10b981;">
+            <i class="fas fa-calendar-check fa-2x mb-2" style="color:#10b981;"></i>
+            <div class="card-title">Manage Attendance</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="/admin/reports" class="text-decoration-none">
+          <div class="module-card text-center" style="border-top:4px solid #ef4444;">
+            <i class="fas fa-exclamation-circle fa-2x mb-2" style="color:#ef4444;"></i>
+            <div class="card-title">Student Reports</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Recent Problem Reports -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-exclamation-circle"></i>Recent Student Reports</div>
+      <div class="card-body">
+        <% if (reports.length === 0) { %>
+          <p class="text-center text-muted py-3">No reports submitted yet.</p>
+        <% } else { %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>Student</th><th>Category</th><th>Description</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+              <% reports.slice(0,5).forEach(r => { %>
+              <tr>
+                <td><%= r.studentName %></td>
+                <td><span class="badge badge-info"><%= r.category %></span></td>
+                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= r.description %></td>
+                <td><%= new Date(r.date).toLocaleDateString() %></td>
+                <td><span class="badge badge-<%= r.status === 'Pending' ? 'pending' : 'resolved' %>"><%= r.status %></span></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <a href="/admin/reports" class="btn-outline mt-2">View All Reports</a>
+        <% } %>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
