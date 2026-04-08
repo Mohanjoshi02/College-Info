@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Timetable - MIT ADT</title>
+  <title>Timetable - MIT ADT Faculty</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
@@ -11,22 +11,22 @@
 <div class="dashboard-container">
   <%- include('../partials/faculty-sidebar') %>
   <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Timetable', user, notifications: [] }) %>
+
     <div class="page-header">
       <div>
         <h1 class="page-title"><i class="fas fa-clock me-2"></i>Timetable Management</h1>
-        <p class="welcome-text">Add and update class schedules</p>
+        <p class="welcome-text">Add class schedules and view each day's timetable separately</p>
       </div>
-      <form method="POST" action="/logout">
-        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
-      </form>
     </div>
 
     <% if (success) { %>
-      <div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Timetable updated!</div>
+      <div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Timetable entry saved!</div>
     <% } %>
 
-    <div class="card">
-      <div class="card-header"><i class="fas fa-plus"></i>Add / Update Timetable Entry</div>
+    <!-- Add Entry Form -->
+    <div class="card mb-4">
+      <div class="card-header"><i class="fas fa-plus"></i> Add / Update Timetable Entry</div>
       <div class="card-body">
         <form method="POST" action="/admin/timetable">
           <div class="form-row">
@@ -60,45 +60,85 @@
             </div>
             <div class="form-col">
               <label class="form-label">Time</label>
-              <input type="text" class="form-control" name="time" placeholder="e.g. 9:00 AM">
+              <input type="text" class="form-control" name="time" placeholder="e.g. 9:00 AM" required>
             </div>
           </div>
-          <button type="submit" class="btn-success mt-2"><i class="fas fa-save me-1"></i>Save Entry</button>
+          <button type="submit" class="btn btn-primary mt-2">
+            <i class="fas fa-save me-1"></i>Save Entry
+          </button>
         </form>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header"><i class="fas fa-table"></i>Current Timetable</div>
-      <div class="card-body">
-        <% const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-           days.forEach(day => {
-             const entries = timetable.filter(t => t.day === day);
-             if (entries.length > 0) { %>
-          <h6 class="mb-2 mt-3"><span class="day-badge"><%= day %></span></h6>
-          <div class="table-responsive mb-3">
-            <table class="table">
-              <thead><tr><th>Time</th><th>Subject</th><th>Faculty</th><th>Room</th><th>Action</th></tr></thead>
-              <tbody>
-                <% entries.forEach(e => { %>
-                <tr>
-                  <td><%= e.time || '—' %></td>
-                  <td><%= e.subject %></td>
-                  <td><%= e.faculty %></td>
-                  <td><%= e.room %></td>
-                  <td>
-                    <form method="POST" action="/admin/timetable/<%= e._id %>/delete" onsubmit="return confirm('Delete entry?')">
-                      <button type="submit" class="btn-danger"><i class="fas fa-trash"></i></button>
-                    </form>
-                  </td>
-                </tr>
-                <% }); %>
-              </tbody>
-            </table>
-          </div>
-        <% } }); %>
+    <!-- Per-Day Sections -->
+    <%
+      const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const dayGradients = {
+        'Monday':    'linear-gradient(135deg,#1a2f6e,#3b6cf6)',
+        'Tuesday':   'linear-gradient(135deg,#4c1d95,#7c3aed)',
+        'Wednesday': 'linear-gradient(135deg,#78350f,#b45309)',
+        'Thursday':  'linear-gradient(135deg,#134e4a,#0d9488)',
+        'Friday':    'linear-gradient(135deg,#065f46,#10b981)',
+        'Saturday':  'linear-gradient(135deg,#1e3a5f,#2563eb)',
+      };
+      const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const todayName = dayNames[new Date().getDay()];
+    %>
+
+    <% days.forEach(day => {
+      const entries = timetable.filter(t => t.day === day);
+    %>
+    <div class="tt-admin-day-card mb-3 <%= day === todayName ? 'today-day-card' : '' %>">
+      <div class="tt-admin-day-header" style="background:<%= dayGradients[day] || 'var(--primary)' %>">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <i class="fas fa-calendar-day" style="font-size:1.1rem;opacity:0.9;"></i>
+          <span style="font-size:1rem;font-weight:800;letter-spacing:0.02em;"><%= day %></span>
+          <% if (day === todayName) { %>
+            <span style="background:rgba(255,255,255,0.25);padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">TODAY</span>
+          <% } %>
+        </div>
+        <span style="font-size:0.82rem;opacity:0.8;"><%= entries.length %> class<%= entries.length !== 1 ? 'es' : '' %></span>
       </div>
+
+      <% if (entries.length === 0) { %>
+        <div style="padding:20px;text-align:center;color:var(--gray-400);font-size:0.88rem;background:white;">
+          <i class="fas fa-moon me-2"></i>No classes scheduled for <%= day %>
+          — <a href="#" onclick="document.querySelector('[name=day]').value='<%= day %>';document.querySelector('[name=day]').closest('form').scrollIntoView({behavior:'smooth'});return false;"
+               style="color:var(--primary-light);font-weight:600;">Add one</a>
+        </div>
+      <% } else { %>
+        <div class="table-responsive" style="background:white;">
+          <table class="table" style="margin:0;">
+            <thead>
+              <tr>
+                <th style="width:110px;">TIME</th>
+                <th>SUBJECT</th>
+                <th>FACULTY</th>
+                <th style="width:90px;">ROOM</th>
+                <th style="width:70px;text-align:center;">ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% entries.sort((a,b) => (a.time||'').localeCompare(b.time||'')).forEach(e => { %>
+              <tr>
+                <td style="font-weight:700;color:var(--primary);white-space:nowrap;"><%= e.time || '—' %></td>
+                <td><div class="tt-subject-pill"><%= e.subject %></div></td>
+                <td style="color:var(--gray-600);"><i class="fas fa-user-tie me-1" style="color:var(--gray-300);"></i><%= e.faculty %></td>
+                <td><span class="badge badge-info"><%= e.room %></span></td>
+                <td style="text-align:center;">
+                  <form method="POST" action="/admin/timetable/<%= e._id %>/delete" onsubmit="return confirm('Delete this entry?')" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
     </div>
+    <% }); %>
+
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

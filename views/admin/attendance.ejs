@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Attendance - MIT ADT</title>
+  <title>Mark Attendance - MIT ADT Faculty</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
@@ -11,75 +11,238 @@
 <div class="dashboard-container">
   <%- include('../partials/faculty-sidebar') %>
   <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Mark Attendance', user, notifications: [] }) %>
+
     <div class="page-header">
       <div>
-        <h1 class="page-title"><i class="fas fa-calendar-check me-2"></i>Manage Attendance</h1>
-        <p class="welcome-text">Update and track student attendance</p>
+        <h1 class="page-title"><i class="fas fa-calendar-check me-2"></i>Mark Attendance</h1>
+        <p class="welcome-text">Select a subject to view enrolled students and mark attendance</p>
       </div>
-      <form method="POST" action="/logout">
-        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
-      </form>
     </div>
 
-    <% if (success) { %>
-      <div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Attendance updated successfully!</div>
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="alert alert-success"><i class="fas fa-check-circle"></i> Attendance updated successfully!</div>
     <% } %>
 
-    <div class="card">
-      <div class="card-header"><i class="fas fa-edit"></i>Update Student Attendance</div>
+    <!-- Subject Selector -->
+    <div class="card mb-4">
+      <div class="card-header"><i class="fas fa-list-alt"></i> Select Subject</div>
+      <div class="card-body">
+        <div class="row g-2">
+          <% SUBJECTS.forEach(subj => { %>
+          <div class="col-md-4 col-sm-6">
+            <button class="btn btn-block subject-btn" data-subject="<%= subj %>"
+              style="background:var(--gray-50);border:1.5px solid var(--gray-200);color:var(--gray-700);text-align:left;padding:12px 14px;border-radius:var(--radius-md);font-size:0.85rem;font-weight:500;transition:var(--transition);">
+              <i class="fas fa-book-open me-2" style="color:var(--primary-light);"></i><%= subj %>
+            </button>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Marking Table -->
+    <div id="attendancePanel" style="display:none;">
+      <div class="card">
+        <div class="card-header green">
+          <i class="fas fa-users"></i>
+          <span id="selectedSubjectLabel">Students</span>
+          <span style="margin-left:auto;font-size:0.8rem;opacity:0.85;" id="todayDate"></span>
+        </div>
+        <div class="card-body p-0">
+          <!-- Low attendance warning list -->
+          <% const lowStudents = []; %>
+          <% students.forEach(s => {
+            const rec = attendance.find(a => a.student && a.student.toString() === s._id.toString());
+            if (rec && rec.percentage < 75) lowStudents.push({ name: s.name, pct: rec.percentage.toFixed(1) });
+          }); %>
+          <% if (lowStudents.length > 0) { %>
+          <div style="padding:14px 18px;border-bottom:1px solid var(--gray-100);">
+            <div class="attendance-warning">
+              <div class="warn-icon"><i class="fas fa-exclamation-triangle"></i></div>
+              <div>
+                <div class="warn-title">⚠ Students with Low Attendance</div>
+                <div class="warn-msg"><%= lowStudents.map(s => `${s.name} (${s.pct}%)`).join(', ') %></div>
+              </div>
+            </div>
+          </div>
+          <% } %>
+
+          <div class="table-responsive">
+            <table class="table" style="margin:0;" id="attendanceTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Student Name</th>
+                  <th>Current Attendance</th>
+                  <th style="text-align:center;">Today's Status</th>
+                  <th style="text-align:center;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% students.forEach((s, idx) => {
+                  const rec = attendance.find(a => a.student && a.student.toString() === s._id.toString());
+                  const pct = rec ? (rec.percentage || 0) : 0;
+                  const low = pct < 75;
+                %>
+                <tr data-student-id="<%= s._id %>" data-student-name="<%= s.name %>">
+                  <td style="color:var(--gray-400)"><%= idx + 1 %></td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div style="width:32px;height:32px;border-radius:50%;background:var(--info-bg);display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:700;font-size:0.85rem;flex-shrink:0;">
+                        <%= s.name.charAt(0).toUpperCase() %>
+                      </div>
+                      <strong style="color:var(--gray-800);"><%= s.name %></strong>
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div class="progress" style="width:80px;height:6px;margin:0;">
+                        <div class="progress-bar <%= pct>=75?'success':'danger' %>" style="width:<%= pct %>%;"></div>
+                      </div>
+                      <span class="badge <%= low?'badge-danger':'badge-success' %>"><%= pct.toFixed(0) %>%</span>
+                    </div>
+                  </td>
+                  <td style="text-align:center;">
+                    <span class="status-badge status-badge-<%= s._id %>" style="font-size:0.82rem;color:var(--gray-400);">Not marked</span>
+                  </td>
+                  <td style="text-align:center;">
+                    <form method="POST" action="/admin/attendance/mark" style="display:inline;" class="mark-form">
+                      <input type="hidden" name="studentId" value="<%= s._id %>">
+                      <input type="hidden" name="subject" class="subject-input" value="">
+                      <input type="hidden" name="totalClasses" value="<%= rec ? rec.totalClasses + 1 : 1 %>">
+                      <input type="hidden" name="attendedPresent" value="<%= rec ? rec.attendedClasses + 1 : 1 %>">
+                      <input type="hidden" name="attendedAbsent" value="<%= rec ? rec.attendedClasses : 0 %>">
+                      <input type="hidden" name="status" class="status-input" value="present">
+                      <button type="button" class="btn-present" onclick="markAttendance(this, '<%= s._id %>', 'present')">
+                        <i class="fas fa-check me-1"></i>P
+                      </button>
+                      <button type="button" class="btn-absent ms-1" onclick="markAttendance(this, '<%= s._id %>', 'absent')">
+                        <i class="fas fa-times me-1"></i>A
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:16px 18px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--gray-100);">
+            <button class="btn btn-success" onclick="submitAllAttendance()">
+              <i class="fas fa-save me-1"></i> Save All Attendance
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legacy Form (fallback) -->
+    <div class="card" id="legacyForm" style="display:none;">
+      <div class="card-header"><i class="fas fa-edit"></i> Manual Attendance Entry</div>
       <div class="card-body">
         <form method="POST" action="/admin/attendance" enctype="multipart/form-data">
           <div class="form-row">
             <div class="form-col">
-              <label class="form-label">Select Student</label>
-              <select class="form-control" name="studentId" required>
-                <option value="">-- Select Student --</option>
-                <% students.forEach(s => { %>
-                  <option value="<%= s._id %>"><%= s.name %> (<%= s.email %>)</option>
-                <% }); %>
-              </select>
+              <div class="form-group">
+                <label class="form-label">Student</label>
+                <select name="studentId" class="form-control form-select" required>
+                  <option value="">Select student...</option>
+                  <% students.forEach(s => { %><option value="<%= s._id %>"><%= s.name %></option><% }); %>
+                </select>
+              </div>
             </div>
             <div class="form-col">
-              <label class="form-label">Subject</label>
-              <select class="form-control" name="subject" required>
-                <option value="">-- Select Subject --</option>
-                <% SUBJECTS.forEach(s => { %>
-                  <option value="<%= s %>"><%= s %></option>
-                <% }); %>
-              </select>
+              <div class="form-group">
+                <label class="form-label">Subject</label>
+                <select name="subject" class="form-control form-select" required>
+                  <option value="">Select subject...</option>
+                  <% SUBJECTS.forEach(sub => { %><option value="<%= sub %>"><%= sub %></option><% }); %>
+                </select>
+              </div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-col">
-              <label class="form-label">Total Classes</label>
-              <input type="number" class="form-control" name="totalClasses" min="0" required placeholder="e.g. 40">
+              <div class="form-group">
+                <label class="form-label">Total Classes</label>
+                <input type="number" name="totalClasses" class="form-control" min="0" required>
+              </div>
             </div>
             <div class="form-col">
-              <label class="form-label">Attended Classes</label>
-              <input type="number" class="form-control" name="attendedClasses" min="0" required placeholder="e.g. 32">
+              <div class="form-group">
+                <label class="form-label">Attended Classes</label>
+                <input type="number" name="attendedClasses" class="form-control" min="0" required>
+              </div>
             </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Upload Supporting File (optional)</label>
-            <input type="file" class="form-control" name="supportFile" accept=".pdf,.jpg,.jpeg,.png">
-            <small class="text-muted">Attendance sheet or proof (PDF/JPG/PNG, max 10MB)</small>
-          </div>
-          <div class="alert alert-info mt-2" style="font-size:0.85rem;">
-            <i class="fas fa-info-circle me-2"></i>Percentage is auto-calculated. Students below 75% will be flagged.
-          </div>
-          <button type="submit" class="btn-success"><i class="fas fa-save me-1"></i>Update Attendance</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Update</button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  document.querySelector('form').addEventListener('submit', function(e) {
-    const total = parseInt(document.querySelector('[name="totalClasses"]').value);
-    const attended = parseInt(document.querySelector('[name="attendedClasses"]').value);
-    if (attended > total) { e.preventDefault(); alert('Attended classes cannot exceed total classes!'); }
+let selectedSubject = '';
+const markedStatus = {};
+
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+
+document.querySelectorAll('.subject-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.subject-btn').forEach(b => {
+      b.style.background = 'var(--gray-50)'; b.style.borderColor = 'var(--gray-200)'; b.style.color = 'var(--gray-700)';
+    });
+    btn.style.background = 'var(--info-bg)'; btn.style.borderColor = 'var(--primary-light)'; btn.style.color = 'var(--primary)';
+    selectedSubject = btn.dataset.subject;
+    document.getElementById('selectedSubjectLabel').textContent = selectedSubject;
+    document.querySelectorAll('.subject-input').forEach(i => i.value = selectedSubject);
+    document.getElementById('attendancePanel').style.display = 'block';
+    document.getElementById('attendancePanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+});
+
+function markAttendance(btn, studentId, status) {
+  markedStatus[studentId] = status;
+  const row = btn.closest('tr');
+  const sp = row.querySelector('.status-badge-' + studentId);
+  if (status === 'present') {
+    sp.textContent = '✅ Present'; sp.style.color = 'var(--success)'; sp.style.fontWeight = '700';
+    row.style.background = 'var(--success-bg)';
+  } else {
+    sp.textContent = '❌ Absent'; sp.style.color = 'var(--danger)'; sp.style.fontWeight = '700';
+    row.style.background = 'var(--danger-bg)';
+  }
+}
+
+function submitAllAttendance() {
+  if (!selectedSubject) { alert('Please select a subject first.'); return; }
+  const entries = Object.entries(markedStatus);
+  if (entries.length === 0) { alert('Please mark attendance for at least one student.'); return; }
+  let submitted = 0;
+  const total = entries.length;
+  entries.forEach(([studentId, status]) => {
+    const row = document.querySelector(`tr[data-student-id="${studentId}"]`);
+    const form = row.querySelector('.mark-form');
+    form.querySelector('.status-input').value = status;
+    form.querySelector('.subject-input').value = selectedSubject;
+    // Set correct attended count
+    const totalInput = form.querySelector('[name="totalClasses"]');
+    const presentInput = form.querySelector('[name="attendedPresent"]');
+    const absentInput = form.querySelector('[name="attendedAbsent"]');
+    const attendedValue = status === 'present' ? presentInput.value : absentInput.value;
+    // Build and submit via fetch
+    const fd = new FormData();
+    fd.append('studentId', studentId);
+    fd.append('subject', selectedSubject);
+    fd.append('totalClasses', totalInput.value);
+    fd.append('attendedClasses', attendedValue);
+    fetch('/admin/attendance', { method: 'POST', body: fd })
+      .then(() => { submitted++; if (submitted === total) { alert('✅ Attendance saved for all ' + total + ' students!'); location.reload(); } })
+      .catch(() => { submitted++; });
+  });
+}
 </script>
 </body>
 </html>

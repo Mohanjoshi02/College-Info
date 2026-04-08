@@ -11,14 +11,12 @@
 <div class="dashboard-container">
   <%- include('../partials/faculty-sidebar') %>
   <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Assignments', user, notifications: [] }) %>
     <div class="page-header">
       <div>
         <h1 class="page-title"><i class="fas fa-tasks me-2"></i>Manage Assignments</h1>
-        <p class="welcome-text">Create and manage student assignments</p>
+        <p class="welcome-text">Create assignments and review student submissions</p>
       </div>
-      <form method="POST" action="/logout">
-        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
-      </form>
     </div>
 
     <% if (success) { %>
@@ -72,24 +70,30 @@
         <% } else { %>
         <div class="table-responsive">
           <table class="table">
-            <thead><tr><th>Subject</th><th>Title</th><th>Description</th><th>Due Date</th><th>PDF</th><th>Action</th></tr></thead>
+            <thead><tr><th>Subject</th><th>Title</th><th>Due Date</th><th>Submissions</th><th>PDF</th><th>Action</th></tr></thead>
             <tbody>
-              <% assignments.forEach(a => { %>
+              <% assignments.forEach(a => {
+                const aSubmissions = (submissions || []).filter(s => s.assignment && s.assignment.toString() === a._id.toString());
+              %>
               <tr>
                 <td><strong><%= a.subject %></strong></td>
                 <td><%= a.title %></td>
-                <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= a.description %></td>
-                <td><%= new Date(a.dueDate).toLocaleDateString() %></td>
+                <td><%= new Date(a.dueDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) %></td>
+                <td>
+                  <a href="/admin/assignments/<%= a._id %>/submissions" class="btn btn-outline btn-sm">
+                    <i class="fas fa-inbox me-1"></i><%= aSubmissions.length %> submitted
+                  </a>
+                </td>
                 <td>
                   <% if (a.pdfFile) { %>
-                    <a href="/uploads/<%= a.pdfFile %>" target="_blank" class="btn-outline" style="font-size:0.78rem;padding:3px 8px;">
+                    <a href="/uploads/<%= a.pdfFile %>" target="_blank" class="btn btn-outline btn-sm">
                       <i class="fas fa-file-pdf me-1"></i>View
                     </a>
                   <% } else { %><span class="text-muted">—</span><% } %>
                 </td>
                 <td>
-                  <form method="POST" action="/admin/assignments/<%= a._id %>/delete" onsubmit="return confirm('Delete this assignment?')">
-                    <button type="submit" class="btn-danger"><i class="fas fa-trash"></i></button>
+                  <form method="POST" action="/admin/assignments/<%= a._id %>/delete" onsubmit="return confirm('Delete?')">
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                   </form>
                 </td>
               </tr>

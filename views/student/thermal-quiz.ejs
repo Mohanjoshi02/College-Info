@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thermal Engineering Quizzes - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Thermal Quizzes', user, notifications }) %>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-fire me-2"></i>Thermal Engineering Quizzes</h1>
+        <p class="welcome-text">Test your knowledge of thermodynamics, heat transfer & fluid mechanics</p>
+      </div>
+      <span class="badge badge-teal" style="font-size:0.9rem;padding:8px 14px;">Mechanical Branch</span>
+    </div>
+
+    <!-- Active Quiz -->
+    <div id="quizContainer" style="display:none;">
+      <div class="exam-card mb-4">
+        <div class="exam-card-header" style="background:linear-gradient(135deg,#78350f,#b45309);">
+          <div class="exam-header-left">
+            <div class="exam-icon-wrap"><i class="fas fa-fire-alt"></i></div>
+            <div>
+              <div class="exam-sem-label">CHAPTER QUIZ</div>
+              <div class="exam-type-title" id="quizTitle">Quiz Title</div>
+            </div>
+          </div>
+          <div class="exam-header-right">
+            <div style="background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:50px;font-size:0.82rem;font-weight:700;">
+              <i class="fas fa-clock me-1"></i><span id="timerDisplay">10:00</span>
+            </div>
+          </div>
+        </div>
+        <div class="exam-card-body p-4" id="quizBody"></div>
+        <div style="padding:16px 24px;border-top:1px solid var(--gray-100);display:flex;gap:12px;">
+          <button class="btn btn-primary" onclick="submitQuiz()"><i class="fas fa-check me-2"></i>Submit Quiz</button>
+          <button class="btn btn-outline" onclick="closeQuiz()"><i class="fas fa-times me-1"></i>Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Panel -->
+    <div id="resultPanel" style="display:none;" class="card mb-4">
+      <div class="card-header" style="background:linear-gradient(135deg,#059669,#10b981);">
+        <i class="fas fa-trophy"></i> Quiz Result
+      </div>
+      <div class="card-body text-center py-5" id="resultBody"></div>
+    </div>
+
+    <!-- Quiz Cards -->
+    <div class="row g-3" id="quizList">
+      <% const quizzes = [
+        { id: 'thermo1', title: 'Laws of Thermodynamics', chapter: 'Chapter 1', questions: 5, duration: 10, difficulty: 'Beginner', icon: 'fa-thermometer-half', color: '#ef4444' },
+        { id: 'heattrans', title: 'Heat Transfer Modes', chapter: 'Chapter 2', questions: 5, duration: 10, difficulty: 'Intermediate', icon: 'fa-wind', color: '#f59e0b' },
+        { id: 'fluids', title: 'Fluid Statics & Dynamics', chapter: 'Chapter 3', questions: 5, duration: 10, difficulty: 'Intermediate', icon: 'fa-tint', color: '#3b6cf6' },
+        { id: 'rankine', title: 'Rankine Cycle', chapter: 'Chapter 4', questions: 5, duration: 10, difficulty: 'Advanced', icon: 'fa-cogs', color: '#7c3aed' },
+        { id: 'carnot', title: 'Carnot Cycle Efficiency', chapter: 'Chapter 5', questions: 5, duration: 10, difficulty: 'Advanced', icon: 'fa-chart-line', color: '#0d9488' },
+        { id: 'refrigeration', title: 'Refrigeration Cycles', chapter: 'Chapter 6', questions: 5, duration: 10, difficulty: 'Intermediate', icon: 'fa-snowflake', color: '#2563eb' },
+      ]; %>
+      <% quizzes.forEach(q => { %>
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div style="width:48px;height:48px;border-radius:var(--radius-md);background:<%= q.color %>20;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <i class="fas <%= q.icon %>" style="color:<%= q.color %>;font-size:1.3rem;"></i>
+          </div>
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-400);margin-bottom:4px;"><%= q.chapter %></div>
+          <div class="card-title"><%= q.title %></div>
+          <div class="card-meta mb-3"><i class="fas fa-question-circle me-1"></i><%= q.questions %> Questions &nbsp;·&nbsp; <i class="fas fa-clock me-1"></i><%= q.duration %> min</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="badge <%= q.difficulty==='Beginner'?'badge-success':q.difficulty==='Intermediate'?'badge-warning':'badge-danger' %>"><%= q.difficulty %></span>
+            <button class="btn btn-primary btn-sm" onclick="startQuiz('<%= q.id %>', '<%= q.title %>', <%= q.duration %>)">
+              <i class="fas fa-play me-1"></i>Start Quiz
+            </button>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const QUIZ_DATA = {
+  thermo1: [
+    { q: 'Which law of thermodynamics states energy cannot be created or destroyed?', opts: ['Zeroth Law','First Law','Second Law','Third Law'], ans: 1 },
+    { q: 'What does entropy measure?', opts: ['Temperature','Pressure','Disorder in a system','Volume'], ans: 2 },
+    { q: 'Absolute zero temperature is?', opts: ['0°C','100°C','-273.15°C','-100°C'], ans: 2 },
+    { q: 'A system that exchanges neither heat nor matter with surroundings is?', opts: ['Open','Closed','Isolated','Adiabatic'], ans: 2 },
+    { q: 'Which process has no heat exchange with surroundings?', opts: ['Isothermal','Isobaric','Isochoric','Adiabatic'], ans: 3 },
+  ],
+  heattrans: [
+    { q: 'Heat transfer through direct physical contact is called?', opts: ['Convection','Conduction','Radiation','Advection'], ans: 1 },
+    { q: 'Fourier\'s law relates to which heat transfer mode?', opts: ['Convection','Radiation','Conduction','All of the above'], ans: 2 },
+    { q: 'Stefan–Boltzmann law governs which mode of heat transfer?', opts: ['Conduction','Convection','Radiation','Diffusion'], ans: 2 },
+    { q: 'Thermal conductivity k has units of?', opts: ['W/m·K','J/kg','Pa·s','W/m²'], ans: 0 },
+    { q: 'Natural convection is driven by?', opts: ['Fan blades','Density differences','Pressure pump','Electromagnetic force'], ans: 1 },
+  ],
+  fluids: [
+    { q: 'Pascal\'s principle states that pressure applied to a fluid is?', opts: ['Absorbed by the fluid','Transmitted equally in all directions','Lost as heat','Converted to velocity'], ans: 1 },
+    { q: 'Bernoulli\'s principle relates pressure to?', opts: ['Temperature','Velocity','Viscosity','Density'], ans: 1 },
+    { q: 'The SI unit of dynamic viscosity is?', opts: ['Pa','Pa·s','N/m²','kg/m³'], ans: 1 },
+    { q: 'Archimedes\' principle deals with?', opts: ['Fluid flow','Buoyancy','Heat transfer','Pressure gauges'], ans: 1 },
+    { q: 'Reynolds number less than 2000 indicates which flow?', opts: ['Turbulent','Transitional','Laminar','Supersonic'], ans: 2 },
+  ],
+  rankine: [
+    { q: 'Rankine cycle is a standard model for which power plant?', opts: ['Gas turbine','Steam power plant','Diesel engine','Nuclear reactor'], ans: 1 },
+    { q: 'The working fluid in the basic Rankine cycle is?', opts: ['Air','Oil','Water/Steam','Refrigerant'], ans: 2 },
+    { q: 'Which process in Rankine cycle is isentropic?', opts: ['Boiling','Turbine expansion','Condensation','Pumping'], ans: 1 },
+    { q: 'Rankine efficiency increases when?', opts: ['Condenser pressure increases','Boiler pressure decreases','Superheat temperature increases','Pump work increases'], ans: 2 },
+    { q: 'Back work ratio in Rankine cycle is typically?', opts: ['1–2%','30–40%','50–60%','70% or above'], ans: 0 },
+  ],
+  carnot: [
+    { q: 'Carnot efficiency depends on?', opts: ['Working fluid','Source & sink temperatures','Mass flow rate','Friction'], ans: 1 },
+    { q: 'Carnot efficiency formula is?', opts: ['1 - TH/TC','1 - TC/TH','TC/TH','TH - TC'], ans: 1 },
+    { q: 'A Carnot engine with TH=500K TC=300K has efficiency?', opts: ['30%','40%','60%','70%'], ans: 1 },
+    { q: 'Carnot cycle consists of how many processes?', opts: ['2','3','4','6'], ans: 2 },
+    { q: 'No real engine can be more efficient than a?', opts: ['Diesel engine','Rankine cycle','Carnot engine','Brayton cycle'], ans: 2 },
+  ],
+  refrigeration: [
+    { q: 'COP of refrigerator is defined as?', opts: ['Heat removed / Work input','Work input / Heat removed','Heat rejected / Work','Temperature ratio'], ans: 0 },
+    { q: 'Vapour compression refrigeration uses which device to expand?', opts: ['Pump','Turbine','Expansion valve','Compressor'], ans: 2 },
+    { q: 'Which refrigerant is being replaced due to ozone depletion?', opts: ['CO₂','R-134a','R-22 (CFC)','Ammonia'], ans: 2 },
+    { q: 'The evaporator absorbs heat from?', opts: ['Surroundings','Refrigerant','Condenser','Compressor'], ans: 0 },
+    { q: 'At higher COP, the refrigeration system is?', opts: ['Less efficient','More efficient','Same efficiency','Unstable'], ans: 1 },
+  ],
+};
+
+let currentQuiz = null, currentAnswers = {}, timerInterval = null, timeLeft = 0;
+
+function startQuiz(id, title, duration) {
+  currentQuiz = id; currentAnswers = {};
+  timeLeft = duration * 60;
+  document.getElementById('quizTitle').textContent = title;
+  document.getElementById('quizList').style.display = 'none';
+  document.getElementById('resultPanel').style.display = 'none';
+  document.getElementById('quizContainer').style.display = 'block';
+
+  const questions = QUIZ_DATA[id];
+  document.getElementById('quizBody').innerHTML = questions.map((q, qi) => `
+    <div style="margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--gray-100);">
+      <div style="font-weight:700;color:var(--gray-800);margin-bottom:12px;font-size:0.95rem;">
+        <span style="color:var(--primary-light);margin-right:6px;">Q${qi+1}.</span> ${q.q}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        ${q.opts.map((opt, oi) => `
+          <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius-md);cursor:pointer;transition:all 0.18s;" class="quiz-opt">
+            <input type="radio" name="q${qi}" value="${oi}" style="accent-color:var(--primary-light);" onchange="currentAnswers[${qi}]=${oi};highlightOption(this)">
+            <span style="font-size:0.88rem;color:var(--gray-700);">${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  // Start timer
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    const m = Math.floor(timeLeft/60); const s = timeLeft%60;
+    document.getElementById('timerDisplay').textContent = m+':'+(s<10?'0':'')+s;
+    if (timeLeft <= 0) { clearInterval(timerInterval); submitQuiz(); }
+  }, 1000);
+  document.getElementById('quizContainer').scrollIntoView({ behavior: 'smooth' });
+}
+
+function highlightOption(inp) {
+  const grp = inp.closest('div').querySelectorAll('.quiz-opt');
+  grp.forEach(l => { l.style.borderColor='var(--gray-200)'; l.style.background=''; });
+  inp.closest('.quiz-opt').style.borderColor = 'var(--primary-light)';
+  inp.closest('.quiz-opt').style.background = 'var(--info-bg)';
+}
+
+function submitQuiz() {
+  clearInterval(timerInterval);
+  const questions = QUIZ_DATA[currentQuiz];
+  let score = 0;
+  questions.forEach((q, qi) => { if (currentAnswers[qi] === q.ans) score++; });
+  const pct = Math.round((score / questions.length) * 100);
+  const grade = pct >= 80 ? 'Excellent! 🏆' : pct >= 60 ? 'Good Job! 👍' : 'Keep Practicing! 📚';
+  const color = pct >= 80 ? '#059669' : pct >= 60 ? '#f59e0b' : '#ef4444';
+
+  document.getElementById('quizContainer').style.display = 'none';
+  document.getElementById('resultPanel').style.display = 'block';
+  document.getElementById('resultBody').innerHTML = `
+    <div style="font-size:4rem;font-weight:900;color:${color};line-height:1;">${score}/${questions.length}</div>
+    <div style="font-size:1.5rem;font-weight:700;color:${color};margin:8px 0;">${grade}</div>
+    <div style="font-size:1rem;color:var(--gray-500);margin-bottom:24px;">Score: ${pct}%</div>
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <button class="btn btn-primary" onclick="document.getElementById('quizList').style.display='';document.getElementById('resultPanel').style.display='none'">
+        <i class="fas fa-list me-2"></i>Back to Quiz List
+      </button>
+    </div>`;
+}
+
+function closeQuiz() {
+  clearInterval(timerInterval);
+  document.getElementById('quizContainer').style.display = 'none';
+  document.getElementById('quizList').style.display = '';
+}
+</script>
+</body>
+</html>

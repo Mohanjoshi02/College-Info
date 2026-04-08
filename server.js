@@ -28,14 +28,18 @@ const upload = multer({
 app.locals.upload = upload;
 
 // Import models
-const User = require('./models/User');
-const Assignment = require('./models/Assignment');
-const Attendance = require('./models/Attendance');
-const Notice = require('./models/Notice');
-const ProblemReport = require('./models/ProblemReport');
-const Timetable = require('./models/Timetable');
-const Alumni = require('./models/Alumni');
-const Project = require('./models/Project');
+const User           = require('./models/User');
+const Assignment     = require('./models/Assignment');
+const Attendance     = require('./models/Attendance');
+const Notice         = require('./models/Notice');
+const ProblemReport  = require('./models/ProblemReport');
+const Timetable      = require('./models/Timetable');
+const Alumni         = require('./models/Alumni');
+const Project        = require('./models/Project');
+const Submission     = require('./models/Submission');
+const Marks          = require('./models/Marks');
+const IndustryProject= require('./models/IndustryProject');
+const Notification   = require('./models/Notification');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -112,6 +116,34 @@ async function seedData() {
         { name: 'Anjali Desai', graduationYear: 2021, company: 'HCL', jobRole: 'UI/UX Designer', linkedin: 'https://linkedin.com' }
       ]);
       console.log('✅ Alumni seeded');
+    }
+    // Seed marketplace projects
+    const mpCount = await IndustryProject.countDocuments();
+    if (mpCount === 0) {
+      await IndustryProject.insertMany([
+        {
+          companyName: 'TCS Innovation Labs',
+          projectTitle: 'AI-Powered Resume Screening Tool',
+          description: 'Build an NLP-based system to automatically rank resumes based on job descriptions.',
+          requiredSkills: ['Python', 'NLP', 'scikit-learn', 'Flask'],
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        },
+        {
+          companyName: 'Infosys Digital',
+          projectTitle: 'IoT Dashboard for Smart Campus',
+          description: 'Develop a real-time IoT monitoring dashboard for campus energy management.',
+          requiredSkills: ['Node.js', 'MQTT', 'React', 'MongoDB'],
+          deadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000)
+        },
+        {
+          companyName: 'Wipro FinTech',
+          projectTitle: 'Fraud Detection System',
+          description: 'Design an ML model to detect fraudulent transactions in real-time with high accuracy.',
+          requiredSkills: ['Python', 'TensorFlow', 'SQL', 'Docker'],
+          deadline: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000)
+        }
+      ]);
+      console.log('✅ Marketplace projects seeded');
     }
   } catch (err) {
     console.error('Seed error:', err.message);

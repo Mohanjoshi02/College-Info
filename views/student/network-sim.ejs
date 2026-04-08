@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Network Simulation - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Network Simulation', user, notifications }) %>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-project-diagram me-2"></i>Network Simulation Lab</h1>
+        <p class="welcome-text">Simulate and design network topologies, protocols and troubleshooting</p>
+      </div>
+      <span class="badge badge-primary" style="font-size:0.9rem;padding:8px 14px;">Networking Branch</span>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="fee-stat-card"><div class="fee-stat-icon blue"><i class="fas fa-network-wired"></i></div><div class="fee-stat-amount">12</div><div class="fee-stat-label">Labs Available</div></div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="fee-stat-card"><div class="fee-stat-icon green"><i class="fas fa-check-circle"></i></div><div class="fee-stat-amount">0</div><div class="fee-stat-label">Completed</div></div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="fee-stat-card"><div class="fee-stat-icon amber"><i class="fas fa-star"></i></div><div class="fee-stat-amount">0</div><div class="fee-stat-label">XP Earned</div></div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="fee-stat-card"><div class="fee-stat-icon purple"><i class="fas fa-trophy"></i></div><div class="fee-stat-amount">0</div><div class="fee-stat-label">Badges</div></div>
+      </div>
+    </div>
+
+    <!-- Simulation Labs -->
+    <div class="row g-3">
+      <% const labs = [
+        { title: 'Basic LAN Setup', desc: 'Configure a basic LAN with switch, multiple PCs and a router using Cisco Packet Tracer.', tool: 'Cisco Packet Tracer', level: 'Beginner', icon: 'fa-ethernet', color: '#3b6cf6', xp: 50 },
+        { title: 'Star Topology Design', desc: 'Design and simulate a star topology network with DHCP and ping tests.', tool: 'Cisco Packet Tracer', level: 'Beginner', icon: 'fa-star', color: '#10b981', xp: 50 },
+        { title: 'VLAN Configuration', desc: 'Set up VLANs to segment traffic between departments in a corporate network.', tool: 'GNS3', level: 'Intermediate', icon: 'fa-sitemap', color: '#f59e0b', xp: 100 },
+        { title: 'Subnetting Practice', desc: 'Divide a Class C network into 8 subnets and verify connectivity.', tool: 'Subnet Calculator', level: 'Intermediate', icon: 'fa-calculator', color: '#7c3aed', xp: 100 },
+        { title: 'RIP Routing Protocol', desc: 'Configure RIP v2 between three routers and implement dynamic routing tables.', tool: 'Cisco Packet Tracer', level: 'Advanced', icon: 'fa-route', color: '#ef4444', xp: 150 },
+        { title: 'OSPF Area Setup', desc: 'Configure OSPF with multiple areas and redistribution between areas.', tool: 'GNS3', level: 'Advanced', icon: 'fa-project-diagram', color: '#0d9488', xp: 150 },
+        { title: 'NAT & PAT Config', desc: 'Implement NAT and PAT to allow a private network to access the internet.', tool: 'Cisco Packet Tracer', level: 'Intermediate', icon: 'fa-exchange-alt', color: '#2563eb', xp: 100 },
+        { title: 'Wireless Network Setup', desc: 'Configure a wireless access point with WPA2 security and connect multiple wireless clients.', tool: 'Cisco Packet Tracer', level: 'Beginner', icon: 'fa-wifi', color: '#059669', xp: 75 },
+        { title: 'Firewall ACL Rules', desc: 'Create Access Control Lists on a router to permit/deny specific traffic flows.', tool: 'GNS3', level: 'Advanced', icon: 'fa-shield-alt', color: '#dc2626', xp: 175 },
+      ]; %>
+      <% labs.forEach(lab => { %>
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div style="width:48px;height:48px;border-radius:var(--radius-md);background:<%= lab.color %>20;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <i class="fas <%= lab.icon %>" style="color:<%= lab.color %>;font-size:1.3rem;"></i>
+          </div>
+          <div class="card-title"><%= lab.title %></div>
+          <div class="card-meta mb-2"><%= lab.desc %></div>
+          <div style="font-size:0.75rem;color:var(--primary-light);margin-bottom:12px;"><i class="fas fa-laptop-code me-1"></i>Tool: <%= lab.tool %></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="badge <%= lab.level==='Beginner'?'badge-success':lab.level==='Intermediate'?'badge-warning':'badge-danger' %>"><%= lab.level %></span>
+              <span style="font-size:0.72rem;color:var(--gray-500);"><i class="fas fa-star" style="color:#f59e0b;font-size:0.65rem;"></i> +<%= lab.xp %> XP</span>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="alert('Lab environment launching... Make sure Cisco Packet Tracer or GNS3 is installed.')">
+              <i class="fas fa-play me-1"></i>Launch
+            </button>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

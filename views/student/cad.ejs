@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAD Practice - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'CAD Practice', user, notifications }) %>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-drafting-compass me-2"></i>CAD Practice</h1>
+        <p class="welcome-text">Mechanical Engineering — Computer-Aided Design exercises</p>
+      </div>
+      <span class="badge badge-teal" style="font-size:0.9rem;padding:8px 14px;">Mechanical Branch</span>
+    </div>
+    <div class="row g-3">
+      <% const cadModules = [
+        { title: 'AutoCAD Basics', desc: 'Learn 2D drafting, line tools, dimensions and layer management.', level: 'Beginner', icon: 'fas fa-pencil-ruler', color: '#10b981' },
+        { title: 'SolidWorks Modelling', desc: '3D part modelling, assemblies and technical drawings.', level: 'Intermediate', icon: 'fas fa-cube', color: '#3b6cf6' },
+        { title: 'CATIA V5 Fundamentals', desc: 'Surface modelling and product design in CATIA.', level: 'Advanced', icon: 'fas fa-object-group', color: '#7c3aed' },
+        { title: 'Assembly Design', desc: 'Multi-part assemblies, constraints and motion simulation.', level: 'Intermediate', icon: 'fas fa-cogs', color: '#f59e0b' },
+        { title: 'Technical Drawing Standards', desc: 'ISO standards for engineering drawings and GD&T.', level: 'Beginner', icon: 'fas fa-ruler-combined', color: '#ef4444' },
+        { title: 'CNC Programming Practice', desc: 'G-code programming and CNC machine simulation.', level: 'Advanced', icon: 'fas fa-microchip', color: '#0d9488' },
+      ]; %>
+      <% cadModules.forEach(m => { %>
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div style="width:48px;height:48px;border-radius:var(--radius-md);background:<%= m.color %>20;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <i class="<%= m.icon %>" style="color:<%= m.color %>;font-size:1.4rem;"></i>
+          </div>
+          <div class="card-title"><%= m.title %></div>
+          <div class="card-meta"><%= m.desc %></div>
+          <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
+            <span class="badge <%= m.level==='Beginner'?'badge-success':m.level==='Intermediate'?'badge-warning':'badge-danger' %>"><%= m.level %></span>
+            <a href="#" class="btn btn-outline btn-sm"><i class="fas fa-play me-1"></i>Start</a>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

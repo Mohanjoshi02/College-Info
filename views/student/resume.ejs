@@ -6,127 +6,246 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .resume-section-header {
+      background: linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);
+      color:white; padding:14px 20px; border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+      font-weight:700; font-size:0.95rem; display:flex; align-items:center; gap:9px;
+    }
+    .resume-section-body { background:white; border-radius:0 0 var(--radius-lg) var(--radius-lg); padding:22px; border:1.5px solid var(--gray-100); border-top:none; margin-bottom:18px; }
+    .coding-platform-card { border:1.5px solid var(--gray-200); border-radius:var(--radius-md); padding:16px; margin-bottom:12px; transition:var(--transition); }
+    .coding-platform-card:hover { border-color:var(--primary-light); box-shadow:var(--shadow-sm); }
+    .platform-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .platform-name { font-weight:700; font-size:0.92rem; display:flex; align-items:center; gap:8px; }
+    .platform-toggle { display:flex; align-items:center; gap:6px; font-size:0.8rem; color:var(--gray-500); cursor:pointer; }
+    .platform-stats { display:flex; gap:12px; }
+    .platform-stat { background:var(--gray-50); border-radius:var(--radius-sm); padding:6px 12px; }
+    .platform-stat .stat-label { font-size:0.7rem; color:var(--gray-500); }
+    .platform-stat .stat-val { font-size:0.95rem; font-weight:700; color:var(--gray-800); }
+
+    /* Live Preview */
+    .resume-preview-panel {
+      background: white; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md); overflow: hidden; position: sticky; top: 92px;
+    }
+    .preview-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .preview-header .preview-title { font-weight: 700; font-size: 0.9rem; }
+    .preview-btn-pdf {
+      background: white; color: var(--primary); border: none; border-radius: var(--radius-md);
+      padding: 8px 18px; font-weight: 700; font-size: 0.82rem; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: var(--transition);
+    }
+    .preview-btn-pdf:hover { background: var(--gray-100); transform: translateY(-1px); }
+    .resume-doc {
+      padding: 24px 22px; min-height: 350px; font-family: 'Inter', sans-serif;
+    }
+    .resume-doc-name { font-size: 2rem; font-weight: 900; line-height: 1; letter-spacing: -0.03em; color: var(--gray-900); }
+    .resume-doc-role { color: var(--primary-light); font-weight: 700; font-size: 1rem; margin-top: 2px; }
+    .resume-doc-email { font-size: 0.82rem; color: var(--gray-600); margin-top: 8px; display: flex; align-items: center; gap: 6px; }
+    .resume-doc-section { margin-top: 18px; border-bottom: 2px solid var(--gray-200); padding-bottom: 4px; margin-bottom: 12px; }
+    .resume-doc-section h4 { color: var(--primary); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin: 0; }
+    .resume-doc-edu { font-size: 0.85rem; color: var(--gray-800); }
+    .resume-doc-edu strong { font-weight: 700; }
+    .resume-avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg,var(--primary),var(--primary-light)); color:white; font-weight:800; font-size:1.4rem; display:flex; align-items:center; justify-content:center; }
+  </style>
 </head>
 <body>
 <div class="dashboard-container">
   <%- include('../partials/student-sidebar') %>
   <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Resume Builder', user, notifications }) %>
+
     <div class="page-header">
       <div>
-        <h1 class="page-title"><i class="fas fa-file-alt me-2"></i>Resume Builder</h1>
-        <p class="welcome-text">Build your professional resume</p>
+        <h1 class="page-title"><i class="fas fa-file-alt me-2"></i>Digital Resume & Portfolio</h1>
+        <p class="welcome-text">Build your professional resume with live preview and PDF download</p>
       </div>
-      <form method="POST" action="/logout">
-        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
-      </form>
     </div>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="alert alert-success"><i class="fas fa-check-circle"></i> Resume updated successfully!</div>
+    <% } %>
 
     <div class="row g-4">
-      <!-- Form -->
-      <div class="col-md-5">
-        <div class="card">
-          <div class="card-header"><i class="fas fa-edit"></i>Enter Your Details</div>
-          <div class="card-body">
-            <div class="form-group">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="rName" placeholder="Your full name" value="<%= user.name %>">
+      <!-- LEFT: Form -->
+      <div class="col-lg-7">
+        <form method="POST" action="/student/resume" id="resumeForm">
+
+          <!-- Academic & Contact Info -->
+          <div class="resume-section-header"><i class="fas fa-user-graduate"></i> Academic & Contact Info</div>
+          <div class="resume-section-body">
+            <div class="form-row mb-3">
+              <div class="form-col">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="inp-name" name="fullName" class="form-control" value="<%= resumeData.fullName || user.name %>" placeholder="Your full name" oninput="updatePreview()">
+              </div>
+              <div class="form-col">
+                <label class="form-label">Email</label>
+                <input type="email" id="inp-email" name="email" class="form-control" value="<%= resumeData.email || '' %>" placeholder="student@mitadt.edu" oninput="updatePreview()">
+              </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control" id="rEmail" placeholder="your@email.com">
+            <div class="form-row">
+              <div class="form-col" style="flex:0 0 140px;">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" value="<%= resumeData.phone || '' %>" placeholder="9876543210">
+              </div>
+              <div class="form-col" style="flex:0 0 120px;">
+                <label class="form-label">CGPA <label style="display:inline;"><input type="checkbox" name="showCgpa" <%= resumeData.showCgpa ? 'checked' : '' %>> Show</label></label>
+                <input type="text" name="cgpa" class="form-control" value="<%= resumeData.cgpa || '' %>" placeholder="e.g. 8.5">
+              </div>
+              <div class="form-col">
+                <label class="form-label">LinkedIn URL</label>
+                <input type="url" name="linkedin" class="form-control" value="<%= resumeData.linkedin || '' %>" placeholder="linkedin.com/in/...">
+              </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">Phone</label>
-              <input type="text" class="form-control" id="rPhone" placeholder="+91 XXXXX XXXXX">
-            </div>
-            <div class="form-group">
+            <div class="form-group mt-3 mb-0">
               <label class="form-label">GitHub Profile URL</label>
-              <input type="text" class="form-control" id="rGithub" placeholder="https://github.com/username">
+              <input type="url" name="github" class="form-control" value="<%= resumeData.github || '' %>" placeholder="https://github.com/username">
             </div>
-            <div class="form-group">
-              <label class="form-label">Skills (comma separated)</label>
-              <textarea class="form-control" id="rSkills" rows="2" placeholder="Python, Java, React, SQL..."></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Projects</label>
-              <textarea class="form-control" id="rProjects" rows="3" placeholder="Project name - description&#10;Project name - description"></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Certifications</label>
-              <textarea class="form-control" id="rCerts" rows="2" placeholder="AWS Cloud Practitioner&#10;Google Data Analytics"></textarea>
-            </div>
-            <button class="btn-success w-100" onclick="generateResume()">
-              <i class="fas fa-magic me-1"></i>Generate Resume
-            </button>
           </div>
-        </div>
+
+          <!-- Linked Coding Profiles -->
+          <div class="resume-section-header" style="margin-top:6px;"><i class="fas fa-code"></i> Linked Coding Profiles</div>
+          <div class="resume-section-body">
+            <!-- LeetCode -->
+            <div class="coding-platform-card" style="border-color:#f0a500;background:#fffdf5;">
+              <div class="platform-header">
+                <div class="platform-name" style="color:#f0a500;"><i class="fas fa-code"></i> LeetCode</div>
+                <label class="platform-toggle"><input type="checkbox" name="showLeetcode" <%= resumeData.showLeetcode ? 'checked' : '' %>> Show Block</label>
+              </div>
+              <input type="text" name="leetcodeUsername" class="form-control mb-2" value="<%= resumeData.leetcodeUsername || '' %>" placeholder="Type LeetCode Username (auto-fetches...)">
+              <div class="platform-stats">
+                <div class="platform-stat"><div class="stat-label">Questions Solved</div><div class="stat-val"><%= resumeData.leetcodeSolved || 0 %></div></div>
+                <div class="platform-stat"><div class="stat-label">Badges</div><div class="stat-val"><%= resumeData.leetcodeBadges || 0 %></div></div>
+              </div>
+            </div>
+            <!-- HackerRank -->
+            <div class="coding-platform-card" style="border-color:#2ec866;background:#f0fff8;">
+              <div class="platform-header">
+                <div class="platform-name" style="color:#2ec866;"><i class="fas fa-terminal"></i> HackerRank</div>
+                <label class="platform-toggle"><input type="checkbox" name="showHackerrank" <%= resumeData.showHackerrank ? 'checked' : '' %>> Show</label>
+              </div>
+              <input type="text" name="hackerrankUsername" class="form-control mb-2" value="<%= resumeData.hackerrankUsername || '' %>" placeholder="Username">
+              <div class="platform-stat" style="display:inline-block;"><div class="stat-label">Solved</div><div class="stat-val"><%= resumeData.hackerrankSolved || 0 %></div></div>
+            </div>
+            <!-- CodeChef -->
+            <div class="coding-platform-card" style="border-color:#5b4638;background:#fdf8f5;">
+              <div class="platform-header">
+                <div class="platform-name" style="color:#5b4638;"><i class="fas fa-laptop-code"></i> CodeChef</div>
+                <label class="platform-toggle"><input type="checkbox" name="showCodechef" <%= resumeData.showCodechef ? 'checked' : '' %>> Show</label>
+              </div>
+              <input type="text" name="codechefUsername" class="form-control mb-2" value="<%= resumeData.codechefUsername || '' %>" placeholder="Username">
+              <div class="platform-stat" style="display:inline-block;"><div class="stat-label">Stars / Points</div><div class="stat-val"><%= resumeData.codechefStars || 0 %></div></div>
+            </div>
+          </div>
+
+          <!-- Experience & Skills -->
+          <div class="resume-section-header" style="margin-top:6px;"><i class="fas fa-tools"></i> Experience & Skills</div>
+          <div class="resume-section-body">
+            <div class="form-group">
+              <label class="form-label">Skills (comma separated) <label style="display:inline;margin-left:8px;"><input type="checkbox" checked> Show on Resume</label></label>
+              <textarea name="skills" class="form-control" rows="2" placeholder="Python, Java, React, SQL, Agile..."><%= (resumeData.skills || []).join(', ') %></textarea>
+            </div>
+            <div class="form-group mb-0">
+              <label class="form-label">Projects <label style="display:inline;margin-left:8px;"><input type="checkbox" checked> Show on Resume</label></label>
+              <textarea name="projects" class="form-control" rows="3" placeholder="E-commerce Web App – Built using MERN stack with Stripe integration..."><%= resumeData.projects || '' %></textarea>
+            </div>
+          </div>
+
+          <!-- Achievements & Certifications -->
+          <div class="resume-section-header" style="margin-top:6px;"><i class="fas fa-award"></i> Achievements & Certifications</div>
+          <div class="resume-section-body">
+            <div class="form-group">
+              <label class="form-label">Achievements & Hackathons <label style="display:inline;margin-left:8px;"><input type="checkbox" checked> Show on Resume</label></label>
+              <textarea name="achievements" class="form-control" rows="2" placeholder="1st Place in CodeFest 2024..."><%= resumeData.achievements || '' %></textarea>
+            </div>
+            <div class="form-group mb-0">
+              <label class="form-label">Certifications <label style="display:inline;margin-left:8px;"><input type="checkbox" checked> Show on Resume</label></label>
+              <textarea name="certifications" class="form-control" rows="2" placeholder="AWS Certified Developer Associate..."><%= resumeData.certifications || '' %></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" style="font-size:1rem;padding:13px 0;">
+            <i class="fas fa-save me-2"></i>Save Profile Details
+          </button>
+        </form>
       </div>
 
-      <!-- Preview -->
-      <div class="col-md-7">
-        <div class="card">
-          <div class="card-header">
-            <i class="fas fa-eye me-2"></i>Resume Preview
-            <button onclick="printResume()" class="btn-outline ms-3" style="font-size:0.78rem;padding:3px 10px;color:white;border-color:white;">
-              <i class="fas fa-download me-1"></i>Download
-            </button>
+      <!-- RIGHT: Live Preview -->
+      <div class="col-lg-5">
+        <div class="resume-preview-panel">
+          <div class="preview-header">
+            <span class="preview-title"><i class="fas fa-eye me-2"></i>Live Document Preview</span>
+            <button class="preview-btn-pdf" onclick="printResume()"><i class="fas fa-print me-1"></i>Print / Save PDF</button>
           </div>
-          <div class="card-body" id="resumePreview">
-            <div class="resume-preview" id="resumeContent">
-              <div style="text-align:center;margin-bottom:20px;">
-                <h2 id="pName" style="color:#1e3a8a;font-size:1.6rem;margin-bottom:4px;">Your Name</h2>
-                <p id="pContact" style="color:#6b7280;font-size:0.9rem;">email@example.com | +91 XXXXX XXXXX</p>
-                <p id="pGithub" style="color:#3b82f6;font-size:0.85rem;"></p>
-              </div>
-              <div class="resume-section">
-                <h4><i class="fas fa-graduation-cap me-2"></i>Education</h4>
-                <p style="font-size:0.9rem;"><strong>B.Tech Computer Engineering</strong><br>MIT ADT University, Pune | 2022 – 2026</p>
-              </div>
-              <div class="resume-section">
-                <h4><i class="fas fa-tools me-2"></i>Skills</h4>
-                <p id="pSkills" style="font-size:0.9rem;">—</p>
-              </div>
-              <div class="resume-section">
-                <h4><i class="fas fa-project-diagram me-2"></i>Projects</h4>
-                <div id="pProjects" style="font-size:0.9rem;">—</div>
-              </div>
-              <div class="resume-section">
-                <h4><i class="fas fa-certificate me-2"></i>Certifications</h4>
-                <div id="pCerts" style="font-size:0.9rem;">—</div>
+          <div class="resume-doc" id="resumePreview">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+              <div class="resume-avatar" id="prev-avatar"><%= (user.name||'TS').split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2) %></div>
+              <div>
+                <div class="resume-doc-name" id="prev-name"><%= (resumeData.fullName || user.name || '').toUpperCase() %></div>
+                <div class="resume-doc-role">Computer Engineering Student</div>
               </div>
             </div>
+            <div class="resume-doc-email" id="prev-email">
+              <i class="fas fa-envelope" style="color:var(--primary-light);"></i>
+              <%= resumeData.email || 'student@mitadt.edu' %>
+            </div>
+            <div class="resume-doc-section"><h4>Education</h4></div>
+            <div class="resume-doc-edu">
+              <strong>MIT ADT University, Pune</strong><br>
+              B.Tech in Computer Engineering | 2022 – 2026
+            </div>
+            <% if ((resumeData.skills||[]).length > 0) { %>
+            <div class="resume-doc-section"><h4>Skills</h4></div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <% (resumeData.skills||[]).forEach(sk => { %>
+                <span class="skill-tag"><%= sk %></span>
+              <% }); %>
+            </div>
+            <% } %>
+            <% if (resumeData.projects) { %>
+            <div class="resume-doc-section"><h4>Projects</h4></div>
+            <div style="font-size:0.82rem;color:var(--gray-700);"><%= resumeData.projects.substring(0,120) %><%= resumeData.projects.length>120?'...':'' %></div>
+            <% } %>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-function generateResume() {
-  document.getElementById('pName').textContent = document.getElementById('rName').value || 'Your Name';
-  const email = document.getElementById('rEmail').value;
-  const phone = document.getElementById('rPhone').value;
-  document.getElementById('pContact').textContent = [email, phone].filter(Boolean).join(' | ') || 'email | phone';
-  const github = document.getElementById('rGithub').value;
-  document.getElementById('pGithub').textContent = github ? 'GitHub: ' + github : '';
-  document.getElementById('pSkills').textContent = document.getElementById('rSkills').value || '—';
-  const projects = document.getElementById('rProjects').value;
-  document.getElementById('pProjects').innerHTML = projects
-    ? projects.split('\n').map(p => `<p style="margin-bottom:4px;">• ${p}</p>`).join('')
-    : '—';
-  const certs = document.getElementById('rCerts').value;
-  document.getElementById('pCerts').innerHTML = certs
-    ? certs.split('\n').map(c => `<p style="margin-bottom:4px;">• ${c}</p>`).join('')
-    : '—';
+function updatePreview() {
+  const name = document.getElementById('inp-name').value || '';
+  const email = document.getElementById('inp-email').value || '';
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0,2) || 'TS';
+  document.getElementById('prev-name').textContent = name.toUpperCase();
+  document.getElementById('prev-email').innerHTML = '<i class="fas fa-envelope" style="color:var(--primary-light);margin-right:6px;"></i>' + email;
+  document.getElementById('prev-avatar').textContent = initials;
 }
+
 function printResume() {
-  const content = document.getElementById('resumeContent').innerHTML;
+  const content = document.getElementById('resumePreview').innerHTML;
   const win = window.open('', '_blank');
-  win.document.write(`<html><head><title>Resume - MIT ADT</title>
-    <style>body{font-family:'Times New Roman',serif;padding:30px;max-width:800px;margin:auto;}
-    h2{color:#1e3a8a;} h4{color:#1e3a8a;border-bottom:1px solid #1e3a8a;padding-bottom:4px;margin-bottom:8px;}
-    </style></head><body>${content}</body></html>`);
+  win.document.write(`<!DOCTYPE html><html><head>
+    <title>Resume - MIT ADT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      body { font-family:'Inter',sans-serif; padding:40px; max-width:760px; margin:0 auto; }
+      .resume-doc-name { font-size:2rem; font-weight:900; }
+      .resume-doc-role { color:#3b6cf6; font-weight:700; }
+      .resume-doc-section { border-bottom:2px solid #e2e8f0; margin:16px 0 8px; }
+      .resume-doc-section h4 { color:#1a2f6e; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 4px; }
+      .skill-tag { background:#eff6ff; color:#1a2f6e; padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:600; display:inline-block; margin:2px; }
+      @media print { body { padding:20px; } }
+    </style>
+  </head><body>${content}</body></html>`);
   win.document.close();
   win.print();
 }

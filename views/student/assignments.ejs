@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assignments - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Assignments', user, notifications }) %>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-tasks me-2"></i>My Assignments</h1>
+        <p class="welcome-text">View, download and submit your assignments</p>
+      </div>
+    </div>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="alert alert-success"><i class="fas fa-check-circle"></i> Assignment submitted successfully!</div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <%= error %></div>
+    <% } %>
+
+    <% assignments.forEach(a => {
+      const due = new Date(a.dueDate); const overdue = due < new Date();
+      const mySubmission = submissions.find(s => s.assignment && s.assignment.toString() === a._id.toString());
+    %>
+    <div class="card mb-3" style="border-left:4px solid <%= overdue ? 'var(--danger)' : 'var(--primary-light)' %>;">
+      <div class="card-body" style="padding:20px 24px;">
+        <div class="row align-items-start">
+          <div class="col-md-8">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <span class="badge <%= overdue ? 'badge-danger' : 'badge-success' %>"><%= overdue ? 'Overdue' : 'Active' %></span>
+              <span style="font-size:0.78rem;color:var(--gray-500);"><i class="fas fa-tag me-1"></i><%= a.subject %></span>
+              <span style="font-size:0.78rem;color:var(--gray-500);"><i class="fas fa-calendar me-1"></i>Due: <span class="<%= overdue ? 'overdue' : '' %>"><%= due.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) %></span></span>
+            </div>
+            <h5 style="color:var(--gray-800);font-weight:700;margin-bottom:6px;"><%= a.title %></h5>
+            <p style="color:var(--gray-600);font-size:0.875rem;margin:0;"><%= a.description %></p>
+          </div>
+          <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+              <% if (a.pdfFile) { %>
+                <a href="/uploads/<%= a.pdfFile %>" target="_blank" class="btn btn-outline btn-sm">
+                  <i class="fas fa-download"></i> Download
+                </a>
+              <% } %>
+
+              <% if (mySubmission) { %>
+                <div style="background:var(--success-bg);border:1px solid #bbf7d0;border-radius:var(--radius-md);padding:10px 14px;text-align:center;min-width:160px;">
+                  <div style="color:var(--success);font-weight:700;font-size:0.85rem;"><i class="fas fa-check-circle me-1"></i>Submitted</div>
+                  <div style="font-size:0.75rem;color:var(--gray-500);margin-top:2px;"><%= new Date(mySubmission.submittedAt).toLocaleDateString() %></div>
+                  <% if (mySubmission.grade) { %>
+                    <div style="margin-top:6px;">
+                      <span class="badge badge-primary">Grade: <%= mySubmission.grade %></span>
+                      <% if (mySubmission.marks !== null) { %><span class="badge badge-info ms-1"><%= mySubmission.marks %> marks</span><% } %>
+                    </div>
+                  <% } %>
+                  <% if (mySubmission.comments) { %>
+                    <div style="font-size:0.72rem;color:var(--gray-500);margin-top:4px;font-style:italic;">"<%= mySubmission.comments.substring(0,50) %>"</div>
+                  <% } %>
+                </div>
+              <% } else { %>
+                <button class="btn btn-primary btn-sm" onclick="openSubmit('<%= a._id %>','<%= a.title %>')">
+                  <i class="fas fa-upload"></i> Submit Assignment
+                </button>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% }); %>
+
+    <% if (assignments.length === 0) { %>
+      <div class="card"><div class="card-body text-center py-5"><i class="fas fa-tasks" style="font-size:3rem;color:var(--gray-300);margin-bottom:16px;display:block;"></i><p style="color:var(--gray-500);">No assignments available yet.</p></div></div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Submit Modal -->
+<div class="modal fade" id="submitModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:var(--radius-lg);border:none;box-shadow:var(--shadow-lg);">
+      <div class="modal-header" style="background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;border-radius:var(--radius-lg) var(--radius-lg) 0 0;">
+        <h5 class="modal-title"><i class="fas fa-upload me-2"></i>Submit Assignment</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px;">
+        <p id="submitAssignTitle" style="font-weight:600;color:var(--gray-800);margin-bottom:16px;"></p>
+        <form method="POST" id="submitForm" enctype="multipart/form-data">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-file-pdf me-1" style="color:var(--danger);"></i>Upload PDF File</label>
+            <input type="file" name="submissionFile" accept=".pdf" required class="form-control">
+            <div style="font-size:0.75rem;color:var(--gray-400);margin-top:4px;">Max 10MB, PDF only</div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:6px;">
+            <button type="button" class="btn btn-outline" data-bs-dismiss="modal" style="flex:1;">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="flex:1;"><i class="fas fa-upload me-1"></i>Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function openSubmit(id, title) {
+  document.getElementById('submitAssignTitle').textContent = 'Assignment: ' + title;
+  document.getElementById('submitForm').action = '/student/assignments/' + id + '/submit';
+  new bootstrap.Modal(document.getElementById('submitModal')).show();
+}
+</script>
+</body>
+</html>
