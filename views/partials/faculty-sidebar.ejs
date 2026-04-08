@@ -3,14 +3,53 @@
     <div class="sidebar-logo"><i class="fas fa-chalkboard-teacher me-2"></i>MIT ADT</div>
     <div class="sidebar-subtitle">Faculty Portal</div>
   </div>
+
+  <!-- Sidebar Search -->
+  <div class="sidebar-search">
+    <i class="fas fa-search search-icon"></i>
+    <input type="text" id="sidebarSearchFac" placeholder="Search..." autocomplete="off">
+    <div class="search-results" id="searchResultsFac"></div>
+  </div>
+
   <nav class="sidebar-nav">
     <div class="nav-section-title">Management</div>
-    <a href="/admin" class="nav-link"><i class="fas fa-home"></i>Dashboard</a>
-    <a href="/admin/assignments" class="nav-link"><i class="fas fa-tasks"></i>Manage Assignments</a>
-    <a href="/admin/notices" class="nav-link"><i class="fas fa-bell"></i>Manage Notices</a>
-    <a href="/admin/attendance" class="nav-link"><i class="fas fa-calendar-check"></i>Manage Attendance</a>
-    <a href="/admin/timetable" class="nav-link"><i class="fas fa-clock"></i>Timetable</a>
-    <a href="/admin/reports" class="nav-link"><i class="fas fa-exclamation-circle"></i>Student Reports</a>
-    <a href="/visitors" class="nav-link"><i class="fas fa-map-marker-alt"></i>Campus Info</a>
+    <a href="/admin"              class="nav-link"><i class="fas fa-home"></i>Dashboard</a>
+    <a href="/admin/assignments"  class="nav-link"><i class="fas fa-tasks"></i>Manage Assignments</a>
+    <a href="/admin/notices"      class="nav-link"><i class="fas fa-bell"></i>Manage Notices</a>
+    <a href="/admin/attendance"   class="nav-link"><i class="fas fa-calendar-check"></i>Mark Attendance</a>
+    <a href="/admin/marks"        class="nav-link"><i class="fas fa-chart-bar"></i>Student Marks</a>
+    <a href="/admin/timetable"    class="nav-link"><i class="fas fa-clock"></i>Timetable</a>
+    <a href="/admin/reports"      class="nav-link"><i class="fas fa-exclamation-circle"></i>Student Reports</a>
+    <a href="/admin/marketplace"  class="nav-link"><i class="fas fa-store"></i>Project Marketplace</a>
+    <a href="/visitors"           class="nav-link"><i class="fas fa-map-marker-alt"></i>Campus Info</a>
   </nav>
 </div>
+
+<script>
+const sfInput = document.getElementById('sidebarSearchFac');
+const sfResults = document.getElementById('searchResultsFac');
+const facLinks = [
+  { text: 'Dashboard',           icon: 'fa-home',           href: '/admin' },
+  { text: 'Manage Assignments',  icon: 'fa-tasks',          href: '/admin/assignments' },
+  { text: 'Manage Notices',      icon: 'fa-bell',           href: '/admin/notices' },
+  { text: 'Mark Attendance',     icon: 'fa-calendar-check', href: '/admin/attendance' },
+  { text: 'Student Marks',       icon: 'fa-chart-bar',      href: '/admin/marks' },
+  { text: 'Timetable',           icon: 'fa-clock',          href: '/admin/timetable' },
+  { text: 'Student Reports',     icon: 'fa-exclamation-circle', href: '/admin/reports' },
+  { text: 'Project Marketplace', icon: 'fa-store',          href: '/admin/marketplace' },
+];
+sfInput.addEventListener('input', () => {
+  const q = sfInput.value.trim().toLowerCase();
+  if (!q) { sfResults.classList.remove('visible'); return; }
+  const f = facLinks.filter(l => l.text.toLowerCase().includes(q));
+  sfResults.innerHTML = f.length
+    ? f.map(l => `<a href="${l.href}" class="search-result-item"><i class="fas ${l.icon}"></i>${l.text}</a>`).join('')
+    : '<div class="search-result-item" style="color:#94a3b8;">No results</div>';
+  sfResults.classList.add('visible');
+});
+document.addEventListener('click', e => {
+  if (!sfInput.contains(e.target) && !sfResults.contains(e.target)) sfResults.classList.remove('visible');
+});
+const cp = window.location.pathname;
+document.querySelectorAll('.nav-link').forEach(l => { if (l.getAttribute('href') === cp) l.classList.add('active'); });
+</script>

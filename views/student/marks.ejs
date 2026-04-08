@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marks & Grades - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.7.1/dist/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Marks & Grades', user, notifications }) %>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-chart-bar me-2"></i>Marks & Grades</h1>
+        <p class="welcome-text">Semester-wise exam performance</p>
+      </div>
+    </div>
+
+    <%
+      // Semester exam data (static for prototype)
+      const semExams = [
+        {
+          sem: 'Semester I',
+          examType: 'Mid-Semester Examination I',
+          shortCode: 'MID-I',
+          color: '#3b6cf6',
+          gradient: 'linear-gradient(135deg,#1a2f6e,#3b6cf6)',
+          icon: 'fa-pencil-alt',
+          maxMarks: 30,
+          subjects: [
+            { name: 'Engineering Physics', marks: 24, grade: 'A+' },
+            { name: 'Introduction to Data Structure', marks: 26, grade: 'O' },
+            { name: 'Programming Language – Python', marks: 22, grade: 'A' },
+            { name: 'Digital Electronics', marks: 18, grade: 'B+' },
+            { name: 'Professional Communication', marks: 25, grade: 'O' },
+          ]
+        },
+        {
+          sem: 'Semester I',
+          examType: 'Mid-Semester Examination II',
+          shortCode: 'MID-II',
+          color: '#7c3aed',
+          gradient: 'linear-gradient(135deg,#4c1d95,#7c3aed)',
+          icon: 'fa-pen-fancy',
+          maxMarks: 30,
+          subjects: [
+            { name: 'Engineering Physics', marks: 21, grade: 'A' },
+            { name: 'Introduction to Data Structure', marks: 28, grade: 'O' },
+            { name: 'Programming Language – Python', marks: 25, grade: 'O' },
+            { name: 'Digital Electronics', marks: 20, grade: 'A' },
+            { name: 'Professional Communication', marks: 23, grade: 'A+' },
+          ]
+        },
+        {
+          sem: 'Semester I',
+          examType: 'End-Semester Examination',
+          shortCode: 'END-SEM',
+          color: '#0d9488',
+          gradient: 'linear-gradient(135deg,#134e4a,#0d9488)',
+          icon: 'fa-graduation-cap',
+          maxMarks: 70,
+          subjects: [
+            { name: 'Engineering Physics', marks: 55, grade: 'A+' },
+            { name: 'Introduction to Data Structure', marks: 65, grade: 'O' },
+            { name: 'Programming Language – Python', marks: 60, grade: 'O' },
+            { name: 'Digital Electronics', marks: 48, grade: 'B+' },
+            { name: 'Professional Communication', marks: 58, grade: 'A+' },
+          ]
+        }
+      ];
+      const gradePoints = { 'O': 10, 'A+': 9, 'A': 8, 'B+': 7, 'B': 6, 'C': 5, 'F': 0 };
+    %>
+
+    <!-- SGPA Overview Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3 col-6">
+        <div class="stat-card" style="border-top-color:#3b6cf6;">
+          <div class="sgpa-circle mb-2"><div class="sgpa-value">8.6</div><div class="sgpa-label">SGPA</div></div>
+          <div class="stat-label">Current SGPA</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card" style="border-top-color:#7c3aed;">
+          <div class="stat-icon">📚</div>
+          <div class="stat-number" style="color:#7c3aed;">5</div>
+          <div class="stat-label">Subjects</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card" style="border-top-color:#10b981;">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-number" style="color:#10b981;">3</div>
+          <div class="stat-label">O Grades</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card" style="border-top-color:#f59e0b;">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-number" style="color:#f59e0b;">3</div>
+          <div class="stat-label">Exams Completed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exam Cards -->
+    <% semExams.forEach((exam, idx) => { %>
+    <div class="exam-card mb-4" id="exam-card-<%= idx %>">
+      <!-- Card Header -->
+      <div class="exam-card-header" style="background:<%= exam.gradient %>">
+        <div class="exam-header-left">
+          <div class="exam-icon-wrap"><i class="fas <%= exam.icon %>"></i></div>
+          <div>
+            <div class="exam-sem-label"><%= exam.sem %></div>
+            <div class="exam-type-title"><%= exam.examType %></div>
+          </div>
+        </div>
+        <div class="exam-header-right">
+          <span class="exam-code-badge"><%= exam.shortCode %></span>
+          <button class="btn-download-report" onclick="downloadReport(<%= idx %>,'<%= exam.examType %>')">
+            <i class="fas fa-download me-1"></i>Download Report
+          </button>
+        </div>
+      </div>
+
+      <!-- Marks Table -->
+      <div class="exam-card-body">
+        <div class="table-responsive">
+          <table class="table exam-table" id="exam-table-<%= idx %>">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Subject</th>
+                <th style="text-align:center;">Marks Obtained</th>
+                <th style="text-align:center;">Max Marks</th>
+                <th style="text-align:center;">Percentage</th>
+                <th style="text-align:center;">Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% exam.subjects.forEach((s, i) => {
+                const pct = Math.round((s.marks / exam.maxMarks) * 100);
+                const gradeClass = s.grade === 'O' ? 'grade-O' : s.grade === 'A+' ? 'grade-Ap' : s.grade === 'A' ? 'grade-A' : s.grade === 'B+' ? 'grade-Bp' : s.grade === 'B' ? 'grade-B' : s.grade === 'C' ? 'grade-C' : 'grade-F';
+              %>
+              <tr>
+                <td style="color:var(--gray-400);font-size:0.8rem;"><%= i+1 %></td>
+                <td><strong style="color:var(--gray-800);"><%= s.name %></strong></td>
+                <td style="text-align:center;font-weight:700;color:var(--primary);"><%= s.marks %></td>
+                <td style="text-align:center;color:var(--gray-500);"><%= exam.maxMarks %></td>
+                <td style="text-align:center;">
+                  <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                    <div class="progress" style="width:80px;height:6px;margin:0;">
+                      <div class="progress-bar <%= pct>=75?'success':'warning' %>" style="width:<%= pct %>%;"></div>
+                    </div>
+                    <span style="font-size:0.82rem;font-weight:600;color:var(--gray-600);"><%= pct %>%</span>
+                  </div>
+                </td>
+                <td style="text-align:center;"><div class="grade-badge <%= gradeClass %>" style="margin:0 auto;"><%= s.grade %></div></td>
+              </tr>
+              <% }); %>
+            </tbody>
+            <tfoot>
+              <%
+                const totalObt = exam.subjects.reduce((a,s) => a+s.marks,0);
+                const totalMax = exam.maxMarks * exam.subjects.length;
+                const totalPct = Math.round((totalObt/totalMax)*100);
+              %>
+              <tr style="background:var(--gray-50);">
+                <td colspan="2" style="font-weight:700;text-align:right;padding-right:12px;color:var(--gray-700);">Total</td>
+                <td style="font-weight:800;color:var(--primary);text-align:center;"><%= totalObt %></td>
+                <td style="text-align:center;font-weight:600;"><%= totalMax %></td>
+                <td style="text-align:center;font-weight:700;color:<%= totalPct>=75?'var(--success)':'var(--warning)' %>;"><%= totalPct %>%</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+    <% }); %>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function downloadReport(idx, examName) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Header
+  doc.setFillColor(26, 47, 110);
+  doc.rect(0, 0, 210, 35, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.text('MIT ADT University', 14, 15);
+  doc.setFontSize(12);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Student Academic Report', 14, 22);
+  doc.setFontSize(10);
+  doc.text(examName, 14, 29);
+
+  // Student info
+  doc.setTextColor(30, 41, 59);
+  doc.setFontSize(11);
+  doc.text('Student: <%= user.name %>', 14, 46);
+  doc.text('Generated: ' + new Date().toLocaleDateString('en-IN'), 14, 53);
+
+  // Table
+  const table = document.getElementById('exam-table-' + idx);
+  const rows = [];
+  table.querySelectorAll('tbody tr').forEach(tr => {
+    const cells = tr.querySelectorAll('td');
+    rows.push([
+      cells[0].textContent.trim(),
+      cells[1].textContent.trim(),
+      cells[2].textContent.trim(),
+      cells[3].textContent.trim(),
+      cells[4].textContent.trim(),
+      cells[5].textContent.trim()
+    ]);
+  });
+
+  doc.autoTable({
+    startY: 62,
+    head: [['#', 'Subject', 'Marks', 'Max', '%', 'Grade']],
+    body: rows,
+    theme: 'grid',
+    headStyles: { fillColor: [26, 47, 110], textColor: 255, fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [248, 250, 252] },
+    styles: { fontSize: 10, cellPadding: 4 }
+  });
+
+  doc.save(examName.replace(/\s+/g, '_') + '_Report.pdf');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fee Status - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Fee Status', user, notifications }) %>
+
+    <!-- Fee Status Header Card -->
+    <div class="fee-header-card">
+      <div class="fee-header-left">
+        <div class="fee-header-icon"><i class="fas fa-credit-card"></i></div>
+        <div>
+          <h1 class="fee-header-title">Fee Status</h1>
+          <p class="fee-header-sub">Fee payment details for <strong><%= user.name %></strong></p>
+        </div>
+      </div>
+      <div class="fee-paid-badge">
+        <i class="fas fa-check-circle me-2"></i>Paid
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3 col-6">
+        <div class="fee-stat-card">
+          <div class="fee-stat-icon blue"><i class="fas fa-file-invoice-dollar"></i></div>
+          <div class="fee-stat-amount">₹1,50,000</div>
+          <div class="fee-stat-label">TOTAL FEE</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="fee-stat-card">
+          <div class="fee-stat-icon green"><i class="fas fa-check-circle"></i></div>
+          <div class="fee-stat-amount green-text">₹1,50,000</div>
+          <div class="fee-stat-label">PAID AMOUNT</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="fee-stat-card">
+          <div class="fee-stat-icon amber"><i class="fas fa-hourglass"></i></div>
+          <div class="fee-stat-amount">₹0</div>
+          <div class="fee-stat-label">REMAINING</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="fee-stat-card">
+          <div class="fee-stat-icon purple"><i class="fas fa-percentage"></i></div>
+          <div class="fee-stat-amount purple-text">100%</div>
+          <div class="fee-stat-label">PAYMENT %</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fee Breakdown -->
+    <div class="card">
+      <div class="card-header purple"><i class="fas fa-list-ul"></i> Fee Breakdown</div>
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <table class="table table-sm" style="margin:0;">
+              <tbody>
+                <tr>
+                  <td style="color:var(--gray-600);font-weight:500;">Student Name</td>
+                  <td style="font-weight:700;color:var(--gray-800);"><%= user.name %></td>
+                </tr>
+                <tr>
+                  <td style="color:var(--gray-600);font-weight:500;">Total Fee</td>
+                  <td style="font-weight:600;">₹1,50,000</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--gray-600);font-weight:500;">Paid Amount</td>
+                  <td style="font-weight:700;color:var(--success);">₹1,50,000</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--gray-600);font-weight:500;">Remaining</td>
+                  <td style="font-weight:700;color:var(--success);">₹0</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--gray-600);font-weight:500;">Status</td>
+                  <td><span class="badge badge-success" style="font-size:0.82rem;"><i class="fas fa-check-circle me-1"></i>Paid</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-6 text-center py-4">
+            <div class="fee-big-pct">100%</div>
+            <div style="font-weight:700;color:var(--success);font-size:0.95rem;margin-bottom:16px;">FEE PAID</div>
+            <div class="progress" style="height:14px;border-radius:20px;max-width:300px;margin:0 auto 10px;">
+              <div class="progress-bar success" style="width:100%;border-radius:20px;"></div>
+            </div>
+            <div style="color:var(--success);font-size:0.88rem;font-weight:600;">
+              <i class="fas fa-check-circle me-1"></i>All fees cleared. No dues pending.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment History -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-history"></i> Payment History</div>
+      <div class="card-body p-0">
+        <table class="table" style="margin:0;">
+          <thead>
+            <tr>
+              <th>Receipt No.</th>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Mode</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;color:var(--primary);">#MIT-2024-001</td>
+              <td>July 10, 2024</td>
+              <td>Sem I Tuition Fee</td>
+              <td style="font-weight:700;">₹75,000</td>
+              <td><span class="badge badge-info">Online</span></td>
+              <td><span class="badge badge-success"><i class="fas fa-check me-1"></i>Paid</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--primary);">#MIT-2025-002</td>
+              <td>January 8, 2025</td>
+              <td>Sem II Tuition Fee</td>
+              <td style="font-weight:700;">₹75,000</td>
+              <td><span class="badge badge-info">Online</span></td>
+              <td><span class="badge badge-success"><i class="fas fa-check me-1"></i>Paid</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

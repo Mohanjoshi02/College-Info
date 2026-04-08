@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Submissions - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/faculty-sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Submissions', user, notifications: [] }) %>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-inbox me-2"></i>Student Submissions</h1>
+        <p class="welcome-text"><strong><%= assignment.subject %></strong> — <%= assignment.title %></p>
+      </div>
+      <a href="/admin/assignments" class="btn btn-outline"><i class="fas fa-arrow-left me-1"></i>Back</a>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><i class="fas fa-users"></i> Submissions (<%= submissions.length %>)</div>
+      <div class="card-body p-0">
+        <% if (submissions.length === 0) { %>
+          <div class="text-center py-5"><i class="fas fa-inbox" style="font-size:3rem;color:var(--gray-300);display:block;margin-bottom:12px;"></i><p style="color:var(--gray-500);">No submissions yet.</p></div>
+        <% } else { %>
+        <div class="table-responsive">
+          <table class="table" style="margin:0;">
+            <thead><tr><th>Student</th><th>Submitted</th><th>Status</th><th>File</th><th>Marks</th><th>Grade</th><th>Comments</th><th>Action</th></tr></thead>
+            <tbody>
+              <% submissions.forEach(s => { %>
+              <tr>
+                <td><strong><%= s.studentName %></strong></td>
+                <td style="color:var(--gray-500);font-size:0.82rem;"><%= new Date(s.submittedAt).toLocaleDateString() %></td>
+                <td><span class="badge <%= s.status==='graded'?'badge-success':s.status==='late'?'badge-danger':'badge-warning' %>"><%= s.status %></span></td>
+                <td>
+                  <% if (s.pdfFile) { %>
+                    <a href="/uploads/<%= s.pdfFile %>" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-file-pdf me-1"></i>View</a>
+                  <% } else { %><span class="text-muted">—</span><% } %>
+                </td>
+                <td><%= s.marks !== null ? s.marks + '/100' : '—' %></td>
+                <td><% if (s.grade) { %><span class="badge badge-primary"><%= s.grade %></span><% } else { %><span style="color:var(--gray-400);">—</span><% } %></td>
+                <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;font-size:0.82rem;color:var(--gray-500);"><%= s.comments || '—' %></td>
+                <td>
+                  <button class="btn btn-primary btn-sm" onclick="openGrade('<%= s._id %>','<%= s.studentName %>')">
+                    <i class="fas fa-pen me-1"></i>Grade
+                  </button>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Grade Modal -->
+<div class="modal fade" id="gradeModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:var(--radius-lg);border:none;box-shadow:var(--shadow-lg);">
+      <div class="modal-header" style="background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;border-radius:var(--radius-lg) var(--radius-lg) 0 0;">
+        <h5 class="modal-title"><i class="fas fa-pen me-2"></i>Grade Submission</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px;">
+        <p id="gradeStudentName" style="font-weight:700;color:var(--gray-800);margin-bottom:16px;"></p>
+        <form method="POST" id="gradeForm">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label class="form-label">Marks (out of 100)</label>
+                <input type="number" name="marks" class="form-control" min="0" max="100" required>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label class="form-label">Grade</label>
+                <select name="grade" class="form-control form-select" required>
+                  <option value="">Select grade</option>
+                  <option value="O">O (Outstanding)</option>
+                  <option value="A+">A+ (Excellent)</option>
+                  <option value="A">A (Very Good)</option>
+                  <option value="B+">B+ (Good)</option>
+                  <option value="B">B (Above Average)</option>
+                  <option value="C">C (Average)</option>
+                  <option value="F">F (Fail)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Comments (optional)</label>
+            <textarea name="comments" class="form-control" rows="3" placeholder="Feedback for student..."></textarea>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button type="button" class="btn btn-outline" data-bs-dismiss="modal" style="flex:1;">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="flex:1;"><i class="fas fa-check me-1"></i>Submit Grade</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function openGrade(subId, name) {
+  document.getElementById('gradeStudentName').textContent = 'Grading: ' + name;
+  document.getElementById('gradeForm').action = '/admin/assignments/<%= assignment._id %>/submissions/' + subId + '/grade';
+  new bootstrap.Modal(document.getElementById('gradeModal')).show();
+}
+</script>
+</body>
+</html>

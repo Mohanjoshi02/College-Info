@@ -1,0 +1,78 @@
+<!-- Top Header Bar -->
+<div class="top-header">
+  <div class="header-left">
+    <span class="header-breadcrumb"><i class="fas fa-university me-2" style="color:var(--primary-light)"></i><strong>MIT ADT</strong> &nbsp;/&nbsp; <%= pageTitle || 'Portal' %></span>
+  </div>
+  <div class="header-right">
+    <!-- Notification Bell -->
+    <div class="notif-bell" id="notifBell">
+      <button class="notif-bell-btn" onclick="toggleNotif()">
+        <i class="fas fa-bell"></i>
+      </button>
+      <% if (typeof notifications !== 'undefined' && notifications.length > 0) { %>
+        <% const unread = notifications.filter(n => !n.isRead).length; %>
+        <% if (unread > 0) { %>
+          <span class="notif-badge"><%= unread > 9 ? '9+' : unread %></span>
+        <% } %>
+      <% } %>
+
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-header">
+          <span><i class="fas fa-bell me-2"></i>Notifications</span>
+          <a href="#" onclick="markAllRead()">Mark all read</a>
+        </div>
+        <% if (typeof notifications !== 'undefined' && notifications.length > 0) { %>
+          <% notifications.slice(0,8).forEach(n => { %>
+            <div class="notif-item <%= !n.isRead ? 'unread' : '' %>">
+              <div class="notif-icon <%= n.type %>">
+                <% if (n.type === 'assignment' || n.type === 'deadline') { %><i class="fas fa-tasks"></i>
+                <% } else if (n.type === 'notice') { %><i class="fas fa-bell"></i>
+                <% } else if (n.type === 'attendance_warning') { %><i class="fas fa-exclamation-triangle"></i>
+                <% } else if (n.type === 'internship') { %><i class="fas fa-briefcase"></i>
+                <% } else if (n.type === 'hackathon') { %><i class="fas fa-trophy"></i>
+                <% } else { %><i class="fas fa-info-circle"></i><% } %>
+              </div>
+              <div class="notif-text">
+                <div class="notif-title"><%= n.title %></div>
+                <div class="notif-msg"><%= n.message %></div>
+              </div>
+              <div class="notif-time"><%= new Date(n.createdAt).toLocaleDateString() %></div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="notif-empty"><i class="fas fa-bell-slash mb-2 d-block" style="font-size:2rem;opacity:0.3;"></i>No new notifications</div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- User Avatar -->
+    <div class="user-avatar">
+      <div class="avatar-circle"><%= (typeof user !== 'undefined' && user.name) ? user.name.charAt(0).toUpperCase() : 'U' %></div>
+      <span class="user-name d-none d-md-inline"><%= typeof user !== 'undefined' ? user.name : '' %></span>
+    </div>
+
+    <!-- Logout -->
+    <form method="POST" action="/logout" style="margin:0;">
+      <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline ms-1">Logout</span></button>
+    </form>
+  </div>
+</div>
+
+<script>
+function toggleNotif() {
+  document.getElementById('notifDropdown').classList.toggle('open');
+}
+function markAllRead() {
+  fetch('/student/notifications/read', { method: 'POST' }).catch(()=>{});
+  document.querySelectorAll('.notif-item.unread').forEach(i => i.classList.remove('unread'));
+  const badge = document.querySelector('.notif-badge');
+  if (badge) badge.remove();
+  return false;
+}
+document.addEventListener('click', e => {
+  const bell = document.getElementById('notifBell');
+  if (bell && !bell.contains(e.target)) {
+    document.getElementById('notifDropdown').classList.remove('open');
+  }
+});
+</script>

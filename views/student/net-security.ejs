@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Network Security - MIT ADT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/student-sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Network Security', user, notifications }) %>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-shield-alt me-2"></i>Network Security Fundamentals</h1>
+        <p class="welcome-text">Learn cybersecurity, ethical hacking concepts, and secure networking practices</p>
+      </div>
+      <span class="badge badge-primary" style="font-size:0.9rem;padding:8px 14px;">Networking Branch</span>
+    </div>
+
+    <!-- Learning Modules -->
+    <div class="row g-3 mb-4">
+      <% const modules = [
+        { title: 'Firewall & ACL Basics',       desc: 'Configure ACL rules on Cisco routers. Permit/deny traffic by IP, port, and protocol.', status: 'available', icon: 'fa-fire-wall', color: '#ef4444', duration: '2h' },
+        { title: 'VPN & IPSec Tunnels',          desc: 'Set up site-to-site VPN tunnels with IPSec encryption between two locations.', status: 'available', icon: 'fa-lock', color: '#7c3aed', duration: '2.5h' },
+        { title: 'Intrusion Detection Systems',  desc: 'Understand Snort IDS/IPS, signature rules, and packet inspection techniques.', status: 'available', icon: 'fa-radar', color: '#f59e0b', duration: '3h' },
+        { title: 'WPA2 & WPA3 Security',         desc: 'Configure wireless security protocols and defend against common WiFi attacks.', status: 'available', icon: 'fa-wifi', color: '#10b981', duration: '1.5h' },
+        { title: 'DDoS Mitigation Techniques',   desc: 'Study rate limiting, blacklisting, and scrubbing center approaches to DDoS defense.', status: 'available', icon: 'fa-shield-virus', color: '#3b6cf6', duration: '2h' },
+        { title: 'PKI & SSL/TLS Certificates',   desc: 'Understand Public Key Infrastructure and configure HTTPS on a web server.', status: 'available', icon: 'fa-certificate', color: '#0d9488', duration: '2h' },
+      ]; %>
+      <% modules.forEach(m => { %>
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div style="width:48px;height:48px;border-radius:var(--radius-md);background:<%= m.color %>20;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <i class="fas fa-shield-alt" style="color:<%= m.color %>;font-size:1.3rem;"></i>
+          </div>
+          <div class="card-title"><%= m.title %></div>
+          <div class="card-meta mb-2"><%= m.desc %></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+            <span style="font-size:0.75rem;color:var(--gray-500);"><i class="fas fa-clock me-1"></i><%= m.duration %></span>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-book-open me-1"></i>Start Module</button>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+
+    <!-- CTF (Capture The Flag) Section -->
+    <div class="card">
+      <div class="card-header" style="background:linear-gradient(135deg,#1a2f6e,#3b6cf6);">
+        <i class="fas fa-flag"></i> Capture The Flag Challenges
+      </div>
+      <div class="card-body p-0">
+        <% const ctfs = [
+          { name: 'SQLi Beginner', category: 'Web Security', pts: 100, hint: 'Think about input validation...' },
+          { name: 'XSS Hunter',    category: 'Web Security', pts: 150, hint: 'Where is user input reflected?' },
+          { name: 'Packet Sniff',  category: 'Network Forensics', pts: 200, hint: 'Look at the pcap carefully.' },
+          { name: 'Crack the Hash',category: 'Cryptography',    pts: 175, hint: 'MD5 is not secure!' },
+          { name: 'Recon Mission', category: 'OSINT',            pts: 125, hint: 'Public information is a goldmine.' },
+        ]; %>
+        <% ctfs.forEach(c => { %>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:14px;">
+          <div style="width:40px;height:40px;border-radius:var(--radius-md);background:var(--info-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-flag" style="color:var(--primary-light);"></i>
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:0.9rem;color:var(--gray-800);"><%= c.name %></div>
+            <div style="font-size:0.75rem;color:var(--gray-500);"><%= c.category %> &nbsp;·&nbsp; <i class="fas fa-lightbulb me-1" style="color:#f59e0b;"></i><%= c.hint %></div>
+          </div>
+          <div style="font-weight:800;color:var(--primary);font-size:1rem;text-align:center;min-width:50px;">
+            <%= c.pts %><div style="font-size:0.65rem;color:var(--gray-400);">PTS</div>
+          </div>
+          <button class="btn btn-outline btn-sm"><i class="fas fa-terminal me-1"></i>Hack</button>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

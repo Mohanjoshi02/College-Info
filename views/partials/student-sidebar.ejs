@@ -3,26 +3,223 @@
     <div class="sidebar-logo"><i class="fas fa-graduation-cap me-2"></i>MIT ADT</div>
     <div class="sidebar-subtitle">Student Portal</div>
   </div>
+
+  <!-- Sidebar Search -->
+  <div class="sidebar-search">
+    <i class="fas fa-search search-icon"></i>
+    <input type="text" id="sidebarSearch" placeholder="Search modules..." autocomplete="off">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
   <nav class="sidebar-nav">
     <div class="nav-section-title">Academic</div>
-    <a href="/student" class="nav-link"><i class="fas fa-home"></i>Dashboard</a>
-    <a href="/student#assignments" class="nav-link"><i class="fas fa-tasks"></i>Assignments</a>
-    <a href="/student#attendance" class="nav-link"><i class="fas fa-calendar-check"></i>Attendance</a>
-    <a href="/student#notices" class="nav-link"><i class="fas fa-bell"></i>Notices</a>
-    <a href="/student#fees" class="nav-link"><i class="fas fa-credit-card"></i>Fee Status</a>
-    <a href="/student/timetable" class="nav-link"><i class="fas fa-clock"></i>Timetable</a>
+    <a href="/student"             class="nav-link spa-link" data-search="dashboard home"><i class="fas fa-home"></i>Dashboard</a>
+    <a href="/student/assignments" class="nav-link spa-link" data-search="assignments tasks submit"><i class="fas fa-tasks"></i>Assignments</a>
+    <a href="/student/attendance"  class="nav-link spa-link" data-search="attendance percentage"><i class="fas fa-calendar-check"></i>Attendance</a>
+    <a href="/student/marks"       class="nav-link spa-link" data-search="marks grades sgpa"><i class="fas fa-chart-bar"></i>Academic Results</a>
+    <a href="/student/notices"     class="nav-link spa-link" data-search="notices announcements"><i class="fas fa-bell"></i>Notices</a>
+    <a href="/student/fees"        class="nav-link spa-link" data-search="fees payment"><i class="fas fa-credit-card"></i>Fee Status</a>
+    <a href="/student/timetable"   class="nav-link spa-link" data-search="timetable schedule classes"><i class="fas fa-clock"></i>Timetable</a>
 
-    <div class="nav-section-title">CS/IT Hub</div>
-    <a href="/student/coding" class="nav-link"><i class="fas fa-code"></i>Coding Practice</a>
-    <a href="/student/hackathons" class="nav-link"><i class="fas fa-trophy"></i>Hackathons</a>
-    <a href="/student/internships" class="nav-link"><i class="fas fa-briefcase"></i>Internships</a>
-    <a href="/student/interview" class="nav-link"><i class="fas fa-user-tie"></i>Interview Prep</a>
-    <a href="/student/resume" class="nav-link"><i class="fas fa-file-alt"></i>Resume Builder</a>
-    <a href="/student/projects" class="nav-link"><i class="fas fa-project-diagram"></i>Project Showcase</a>
+    <!-- BRANCHES Dropdown -->
+    <div class="nav-section-title" style="margin-top:6px;">Branches</div>
 
-    <div class="nav-section-title">Network</div>
-    <a href="/student/alumni" class="nav-link"><i class="fas fa-users"></i>Alumni Network</a>
-    <a href="/student/report" class="nav-link"><i class="fas fa-exclamation-circle"></i>Report Problem</a>
-    <a href="/visitors" class="nav-link"><i class="fas fa-map-marker-alt"></i>Campus Info</a>
+    <!-- CS / IT HUB -->
+    <div class="nav-dropdown-toggle" id="csitToggle">
+      <span class="toggle-left"><i class="fas fa-laptop-code icon"></i>CS / IT Hub</span>
+      <i class="fas fa-chevron-down chevron"></i>
+    </div>
+    <div class="nav-dropdown-body" id="csitBody">
+      <a href="/student/coding"       class="branch-link spa-link" data-search="coding practice problems"><i class="fas fa-code"></i>Coding Practice</a>
+      <a href="/student/hackathons"   class="branch-link spa-link" data-search="hackathons competitions"><i class="fas fa-trophy"></i>Hackathons</a>
+      <a href="/student/internships"  class="branch-link spa-link" data-search="internships jobs"><i class="fas fa-briefcase"></i>Internships</a>
+      <a href="/student/interview"    class="branch-link spa-link" data-search="interview preparation"><i class="fas fa-user-tie"></i>Interview Prep</a>
+      <a href="/student/resume"       class="branch-link spa-link" data-search="resume digital"><i class="fas fa-file-alt"></i>Digital Resume</a>
+      <a href="/student/projects"     class="branch-link spa-link" data-search="project showcase"><i class="fas fa-project-diagram"></i>Project Showcase</a>
+    </div>
+
+    <!-- Mechanical HUB -->
+    <div class="nav-dropdown-toggle" id="mechToggle">
+      <span class="toggle-left"><i class="fas fa-cogs icon"></i>Mechanical Hub</span>
+      <i class="fas fa-chevron-down chevron"></i>
+    </div>
+    <div class="nav-dropdown-body" id="mechBody">
+      <a href="/student/cad"               class="branch-link spa-link" data-search="cad design mechanical"><i class="fas fa-drafting-compass"></i>CAD / CAM Practice</a>
+      <a href="/student/design-challenges" class="branch-link spa-link" data-search="design challenges"><i class="fas fa-lightbulb"></i>Design Challenges</a>
+      <a href="/student/thermal-quiz"      class="branch-link spa-link" data-search="thermal engineering quiz"><i class="fas fa-fire"></i>Thermal Eng. Quizzes</a>
+    </div>
+
+    <!-- Networking HUB -->
+    <div class="nav-dropdown-toggle" id="netToggle">
+      <span class="toggle-left"><i class="fas fa-network-wired icon"></i>Network Hub</span>
+      <i class="fas fa-chevron-down chevron"></i>
+    </div>
+    <div class="nav-dropdown-body" id="netBody">
+      <a href="/student/network-sim"   class="branch-link spa-link" data-search="network simulation"><i class="fas fa-project-diagram"></i>Network Simulation</a>
+      <a href="/student/net-challenges" class="branch-link spa-link" data-search="networking challenges"><i class="fas fa-trophy"></i>Networking Challenges</a>
+      <a href="/student/net-security"  class="branch-link spa-link" data-search="network security"><i class="fas fa-shield-alt"></i>Network Security</a>
+    </div>
+
+    <!-- Community Dropdown -->
+    <div class="nav-section-title" style="margin-top:6px;">Community</div>
+    <div class="nav-dropdown-toggle" id="communityToggle">
+      <span class="toggle-left"><i class="fas fa-users icon"></i>Community</span>
+      <i class="fas fa-chevron-down chevron"></i>
+    </div>
+    <div class="nav-dropdown-body" id="communityBody">
+      <a href="/student/marketplace" class="branch-link spa-link" data-search="industry projects marketplace"><i class="fas fa-store"></i>Project Marketplace</a>
+      <a href="/student/alumni"      class="branch-link spa-link" data-search="alumni network"><i class="fas fa-user-graduate"></i>Alumni Network</a>
+      <a href="/student/report"      class="branch-link spa-link" data-search="report problem"><i class="fas fa-exclamation-circle"></i>Report Problem</a>
+      <a href="/visitors"            class="branch-link" data-search="campus info visitors"><i class="fas fa-map-marker-alt"></i>Campus Info</a>
+    </div>
   </nav>
 </div>
+
+<script>
+// ── SPA Navigation ─────────────────────────────────────────────────────────
+function initSpaNav() {
+  document.querySelectorAll('.spa-link').forEach(link => {
+    if (link._spaInit) return;
+    link._spaInit = true;
+    link.addEventListener('click', async function(e) {
+      e.preventDefault();
+      const href = this.getAttribute('href');
+      await loadPage(href);
+    });
+  });
+}
+
+async function loadPage(href) {
+  const mainContent = document.querySelector('.main-content');
+  if (!mainContent) { window.location.href = href; return; }
+
+  // Show spinner
+  mainContent.style.opacity = '0.5';
+  mainContent.style.pointerEvents = 'none';
+
+  try {
+    const res = await fetch(href, { headers: { 'X-SPA': '1' } });
+    const html = await res.text();
+
+    // Parse and extract .main-content from response
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const newMain = doc.querySelector('.main-content');
+
+    if (newMain) {
+      mainContent.innerHTML = newMain.innerHTML;
+      // Re-run scripts in new content
+      mainContent.querySelectorAll('script').forEach(oldScript => {
+        const newScript = document.createElement('script');
+        if (oldScript.src) { newScript.src = oldScript.src; }
+        else { newScript.textContent = oldScript.textContent; }
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      });
+      history.pushState({ href }, '', href);
+    } else {
+      window.location.href = href;
+    }
+  } catch(err) {
+    window.location.href = href;
+  }
+
+  mainContent.style.opacity = '1';
+  mainContent.style.pointerEvents = '';
+  updateActiveLinks();
+}
+
+// Handle browser back/forward
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.href) loadPage(e.state.href);
+  else loadPage(location.pathname);
+});
+
+// ── Dropdown toggles with localStorage persistence ─────────────────────────
+function initDropdown(toggleId, bodyId, defaultOpen) {
+  const toggle = document.getElementById(toggleId);
+  const body   = document.getElementById(bodyId);
+  if (!toggle || !body) return;
+
+  const stored = localStorage.getItem('sidebar_' + toggleId);
+  const isOpen = stored !== null ? JSON.parse(stored) : defaultOpen;
+  if (isOpen) { toggle.classList.add('open'); body.classList.add('open'); }
+
+  toggle.addEventListener('click', () => {
+    const opening = !toggle.classList.contains('open');
+    toggle.classList.toggle('open');
+    body.classList.toggle('open');
+    localStorage.setItem('sidebar_' + toggleId, JSON.stringify(opening));
+  });
+}
+
+initDropdown('csitToggle',      'csitBody',      true);
+initDropdown('mechToggle',      'mechBody',      false);
+initDropdown('netToggle',       'netBody',       false);
+initDropdown('communityToggle', 'communityBody', false);
+
+// ── Active link highlight ──────────────────────────────────────────────────
+function updateActiveLinks() {
+  const currentPath = window.location.pathname;
+  document.querySelectorAll('.nav-link, .branch-link').forEach(link => {
+    const href = link.getAttribute('href');
+    link.classList.remove('active');
+    if (href === currentPath || (href !== '/student' && currentPath.startsWith(href))) {
+      link.classList.add('active');
+    }
+  });
+}
+updateActiveLinks();
+initSpaNav();
+
+// ── Sidebar Search ─────────────────────────────────────────────────────────
+const searchInput   = document.getElementById('sidebarSearch');
+const searchResults = document.getElementById('searchResults');
+const searchableLinks = [
+  { text: 'Dashboard',             icon: 'fa-home',             href: '/student' },
+  { text: 'Assignments',           icon: 'fa-tasks',            href: '/student/assignments' },
+  { text: 'Attendance',            icon: 'fa-calendar-check',   href: '/student/attendance' },
+  { text: 'Marks & Grades',        icon: 'fa-chart-bar',        href: '/student/marks' },
+  { text: 'Notices',               icon: 'fa-bell',             href: '/student/notices' },
+  { text: 'Fee Status',            icon: 'fa-credit-card',      href: '/student/fees' },
+  { text: 'Timetable',             icon: 'fa-clock',            href: '/student/timetable' },
+  { text: 'Coding Practice',       icon: 'fa-code',             href: '/student/coding' },
+  { text: 'Hackathons',            icon: 'fa-trophy',           href: '/student/hackathons' },
+  { text: 'Internships',           icon: 'fa-briefcase',        href: '/student/internships' },
+  { text: 'Interview Prep',        icon: 'fa-user-tie',         href: '/student/interview' },
+  { text: 'Digital Resume',        icon: 'fa-file-alt',         href: '/student/resume' },
+  { text: 'Project Showcase',      icon: 'fa-project-diagram',  href: '/student/projects' },
+  { text: 'CAD Practice',          icon: 'fa-drafting-compass', href: '/student/cad' },
+  { text: 'Design Challenges',     icon: 'fa-lightbulb',        href: '/student/design-challenges' },
+  { text: 'Thermal Eng. Quiz',     icon: 'fa-fire',             href: '/student/thermal-quiz' },
+  { text: 'Network Simulation',    icon: 'fa-project-diagram',  href: '/student/network-sim' },
+  { text: 'Networking Challenges', icon: 'fa-trophy',           href: '/student/net-challenges' },
+  { text: 'Network Security',      icon: 'fa-shield-alt',       href: '/student/net-security' },
+  { text: 'Project Marketplace',   icon: 'fa-store',            href: '/student/marketplace' },
+  { text: 'Alumni Network',        icon: 'fa-user-graduate',    href: '/student/alumni' },
+  { text: 'Campus Info',           icon: 'fa-map-marker-alt',   href: '/visitors' },
+];
+
+if (searchInput) {
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    if (!q) { searchResults.classList.remove('visible'); return; }
+    const filtered = searchableLinks.filter(l => l.text.toLowerCase().includes(q));
+    if (!filtered.length) {
+      searchResults.innerHTML = '<div class="search-result-item" style="color:#94a3b8;">No results found</div>';
+      searchResults.classList.add('visible'); return;
+    }
+    searchResults.innerHTML = filtered.slice(0,8).map(l =>
+      `<a href="${l.href}" class="search-result-item spa-link"><i class="fas ${l.icon}"></i>${l.text}</a>`
+    ).join('');
+    searchResults.classList.add('visible');
+    // Re-bind spa nav on search results
+    initSpaNav();
+  });
+
+  document.addEventListener('click', e => {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      searchResults.classList.remove('visible');
+    }
+  });
+}
+</script>

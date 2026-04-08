@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Marketplace - MIT ADT Faculty</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <%- include('../partials/faculty-sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Project Marketplace', user, notifications: [] }) %>
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fas fa-store me-2"></i>Industry Project Marketplace</h1>
+        <p class="welcome-text">Post projects and review student applications</p>
+      </div>
+    </div>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="alert alert-success"><i class="fas fa-check-circle"></i> Project posted successfully!</div>
+    <% } %>
+
+    <!-- Post Project Form -->
+    <div class="card mb-4">
+      <div class="card-header teal"><i class="fas fa-plus"></i> Post New Project</div>
+      <div class="card-body">
+        <form method="POST" action="/admin/marketplace">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label class="form-label">Company Name</label>
+                <input type="text" name="companyName" class="form-control" required placeholder="e.g. Tata Consultancy Services">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label class="form-label">Project Title</label>
+                <input type="text" name="projectTitle" class="form-control" required placeholder="e.g. AI Chatbot for Customer Support">
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3" required placeholder="Detailed project description..."></textarea>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label class="form-label">Required Skills (comma-separated)</label>
+                <input type="text" name="requiredSkills" class="form-control" placeholder="Python, TensorFlow, NLP">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Application Deadline</label>
+                <input type="date" name="deadline" class="form-control" required>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-1"></i>Post Project</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Projects List -->
+    <% if (projects.length === 0) { %>
+      <div class="card"><div class="card-body text-center py-4"><p style="color:var(--gray-500);">No projects posted yet.</p></div></div>
+    <% } else { %>
+    <% projects.forEach(p => { %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div>
+            <div class="project-company"><i class="fas fa-building me-1"></i><%= p.companyName %></div>
+            <h5 style="font-weight:700;color:var(--gray-800);margin:4px 0;"><%= p.projectTitle %></h5>
+            <p style="color:var(--gray-600);font-size:0.875rem;margin:0;"><%= p.description %></p>
+          </div>
+          <div style="text-align:right;flex-shrink:0;margin-left:16px;">
+            <div class="project-skills mb-2"><% (p.requiredSkills||[]).forEach(s => { %><span class="skill-tag"><%= s %></span><% }); %></div>
+            <div class="project-deadline"><i class="fas fa-calendar-times"></i> <%= new Date(p.deadline).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) %></div>
+          </div>
+        </div>
+
+        <% if (p.applicants && p.applicants.length > 0) { %>
+        <div style="background:var(--gray-50);border-radius:var(--radius-md);padding:14px;border:1px solid var(--gray-200);">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--gray-700);margin-bottom:10px;"><i class="fas fa-users me-1" style="color:var(--primary-light);"></i><%= p.applicants.length %> Application<%= p.applicants.length !== 1 ? 's' : '' %></div>
+          <div class="table-responsive">
+            <table class="table table-sm" style="margin:0;">
+              <thead><tr><th>Student</th><th>Applied On</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody>
+                <% p.applicants.forEach(app => { %>
+                <tr>
+                  <td><strong><%= app.studentName %></strong></td>
+                  <td style="color:var(--gray-500);font-size:0.82rem;"><%= new Date(app.appliedAt).toLocaleDateString() %></td>
+                  <td>
+                    <span class="badge <%= app.status==='approved'?'badge-success':app.status==='rejected'?'badge-danger':'badge-warning' %>"><%= app.status %></span>
+                  </td>
+                  <td>
+                    <% if (app.status === 'pending') { %>
+                    <form method="POST" action="/admin/marketplace/<%= p._id %>/applications/<%= app.student %>/approve" style="display:inline;">
+                      <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check me-1"></i>Approve</button>
+                    </form>
+                    <form method="POST" action="/admin/marketplace/<%= p._id %>/applications/<%= app.student %>/reject" style="display:inline;margin-left:5px;">
+                      <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-times me-1"></i>Reject</button>
+                    </form>
+                    <% } %>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <% } else { %>
+          <div style="color:var(--gray-400);font-size:0.85rem;"><i class="fas fa-inbox me-1"></i>No applications yet.</div>
+        <% } %>
+      </div>
+    </div>
+    <% }); %>
+    <% } %>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

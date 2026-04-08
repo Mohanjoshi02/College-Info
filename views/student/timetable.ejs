@@ -11,71 +11,158 @@
 <div class="dashboard-container">
   <%- include('../partials/student-sidebar') %>
   <div class="main-content">
+    <%- include('../partials/top-header', { pageTitle: 'Timetable', user, notifications }) %>
+
     <div class="page-header">
       <div>
         <h1 class="page-title"><i class="fas fa-clock me-2"></i>Class Timetable</h1>
-        <p class="welcome-text">Your weekly schedule</p>
+        <p class="welcome-text">Your weekly schedule — <span id="currentDay"></span></p>
       </div>
-      <form method="POST" action="/logout">
-        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
-      </form>
     </div>
 
-    <!-- Substitute notice (prototype) -->
-    <div class="substitute-notice">
-      <i class="fas fa-info-circle me-2"></i>
-      <strong>Notice:</strong> Substitute faculty assigned for today's class — Engineering Physics (Dr. Mehta → Prof. Kulkarni)
+    <!-- Schedule info bar -->
+    <div class="tt-info-bar mb-4">
+      <span class="tt-info-item blue"><i class="fas fa-play-circle me-2"></i>Classes start 8:45 AM</span>
+      <span class="tt-info-item amber"><i class="fas fa-utensils me-2"></i>Lunch 12:00 – 1:00 PM</span>
+      <span class="tt-info-item green"><i class="fas fa-stop-circle me-2"></i>Classes end 3:15 PM</span>
     </div>
 
-    <!-- Substitute Table (prototype) -->
-    <div class="card">
-      <div class="card-header"><i class="fas fa-exchange-alt"></i>Substitute Faculty Today</div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table">
-            <thead><tr><th>Subject</th><th>Original Faculty</th><th>Substitute Faculty</th><th>Date</th></tr></thead>
-            <tbody>
+    <!-- Next Lecture Banner -->
+    <div id="nextLectureBanner"></div>
+
+    <!-- Day-wise Dropdown Timetable -->
+    <div id="tt-accordion">
+      <%
+        const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        days.forEach(day => {
+          const entries = timetable.filter(t => t.day === day);
+          if (entries.length > 0) {
+      %>
+      <div class="tt-day-block" data-day="<%= day %>">
+        <div class="tt-day-header" onclick="toggleDay('<%= day %>')">
+          <div class="tt-day-left">
+            <span class="tt-dot <%= day %>-dot"></span>
+            <span class="tt-day-name" id="dayname-<%= day %>"><%= day %></span>
+            <span class="tt-today-tag" id="today-tag-<%= day %>" style="display:none;">TODAY</span>
+          </div>
+          <div class="tt-day-right">
+            <span class="tt-class-count"><%= entries.length %> classes</span>
+            <i class="fas fa-chevron-down tt-chevron" id="chevron-<%= day %>"></i>
+          </div>
+        </div>
+        <div class="tt-day-body" id="body-<%= day %>" style="display:none;">
+          <table class="table tt-detail-table">
+            <thead>
               <tr>
-                <td>Engineering Physics</td>
-                <td>Dr. Mehta</td>
-                <td><span class="badge badge-warning">Prof. Kulkarni</span></td>
-                <td><%= new Date().toLocaleDateString() %></td>
+                <th>TIME</th>
+                <th>SUBJECT</th>
+                <th>FACULTY</th>
+                <th>ROOM</th>
               </tr>
+            </thead>
+            <tbody>
+              <% entries.forEach(e => { %>
+              <tr data-time="<%= e.time || '' %>">
+                <td style="font-weight:700;color:var(--primary);white-space:nowrap;"><%= e.time || '—' %></td>
+                <td>
+                  <div class="tt-subject-pill"><%= e.subject %></div>
+                </td>
+                <td style="color:var(--gray-600);"><i class="fas fa-user-tie me-1" style="color:var(--gray-400);"></i><%= e.faculty %></td>
+                <td><span class="badge badge-info"><%= e.room %></span></td>
+              </tr>
+              <% }); %>
             </tbody>
           </table>
         </div>
       </div>
+      <% } }); %>
     </div>
 
-    <!-- Weekly Timetable -->
-    <div class="card">
-      <div class="card-header"><i class="fas fa-table"></i>Weekly Schedule</div>
-      <div class="card-body">
-        <% const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-           days.forEach(day => {
-             const entries = timetable.filter(t => t.day === day);
-             if (entries.length > 0) { %>
-          <h6 class="mb-2 mt-3"><span class="day-badge"><%= day %></span></h6>
-          <div class="table-responsive mb-3">
-            <table class="table">
-              <thead><tr><th>Time</th><th>Subject</th><th>Faculty</th><th>Room</th></tr></thead>
-              <tbody>
-                <% entries.forEach(e => { %>
-                <tr>
-                  <td><strong><%= e.time || '—' %></strong></td>
-                  <td><%= e.subject %></td>
-                  <td><%= e.faculty %></td>
-                  <td><span class="badge badge-info"><%= e.room %></span></td>
-                </tr>
-                <% }); %>
-              </tbody>
-            </table>
-          </div>
-        <% } }); %>
-      </div>
-    </div>
   </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const now = new Date();
+const todayName = dayNames[now.getDay()];
+const currentHour = now.getHours();
+const currentMin  = now.getMinutes();
+
+document.getElementById('currentDay').textContent = todayName + ', ' + now.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+
+// Toggle day accordion
+function toggleDay(day) {
+  const body = document.getElementById('body-' + day);
+  const chevron = document.getElementById('chevron-' + day);
+  const header = body.previousElementSibling;
+  const isOpen = body.style.display === 'block';
+  body.style.display = isOpen ? 'none' : 'block';
+  chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+  header.classList.toggle('open', !isOpen);
+}
+
+// Auto-open today & highlight
+const todayBlock = document.querySelector('[data-day="' + todayName + '"]');
+if (todayBlock) {
+  const header = todayBlock.querySelector('.tt-day-header');
+  const body   = document.getElementById('body-' + todayName);
+  const chevron= document.getElementById('chevron-' + todayName);
+  const tag    = document.getElementById('today-tag-' + todayName);
+  if (body) { body.style.display = 'block'; }
+  if (chevron) { chevron.style.transform = 'rotate(180deg)'; }
+  if (header) { header.classList.add('open', 'today-header'); }
+  if (tag) { tag.style.display = 'inline-block'; }
+  todayBlock.classList.add('today-block');
+}
+
+// Parse time
+function parseTime(t) {
+  if (!t) return null;
+  const m = t.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (!m) return null;
+  let h = parseInt(m[1]); const min = parseInt(m[2]);
+  if (m[3].toUpperCase() === 'PM' && h !== 12) h += 12;
+  if (m[3].toUpperCase() === 'AM' && h === 12) h = 0;
+  return h * 60 + min;
+}
+
+const nowMins = currentHour * 60 + currentMin;
+let nextLecture = null, minDiff = Infinity;
+
+document.querySelectorAll('#body-' + todayName + ' tr[data-time]').forEach(row => {
+  const t = parseTime(row.dataset.time);
+  if (t !== null && t > nowMins && (t - nowMins) < minDiff) {
+    minDiff = t - nowMins; nextLecture = row;
+  }
+});
+
+const banner = document.getElementById('nextLectureBanner');
+if (nextLecture) {
+  nextLecture.classList.add('next-lecture-row');
+  const cells = nextLecture.querySelectorAll('td');
+  const time = nextLecture.dataset.time;
+  const subject = cells[1] ? cells[1].textContent.trim() : '—';
+  const faculty  = cells[2] ? cells[2].textContent.trim() : '—';
+  const room     = cells[3] ? cells[3].textContent.trim() : '—';
+  const hrs = Math.floor(minDiff/60), mins = minDiff % 60;
+  banner.innerHTML = `
+    <div class="next-lecture-banner">
+      <div class="next-lecture-icon"><i class="fas fa-bell"></i></div>
+      <div>
+        <div class="next-lecture-label">Next Lecture Today</div>
+        <div class="next-lecture-subject">${subject}</div>
+        <div class="next-lecture-detail">
+          <i class="fas fa-clock me-1"></i>${time} &nbsp;|&nbsp;
+          <i class="fas fa-user me-1"></i>${faculty} &nbsp;|&nbsp;
+          <i class="fas fa-door-open me-1"></i>${room} &nbsp;|&nbsp;
+          <i class="fas fa-hourglass-half me-1"></i>In ${hrs > 0 ? hrs + 'h ' : ''}${mins}m
+        </div>
+      </div>
+    </div>`;
+} else {
+  banner.innerHTML = `<div class="next-lecture-none"><i class="fas fa-moon me-2"></i>No more lectures scheduled for today. Enjoy your evening!</div>`;
+}
+</script>
 </body>
 </html>
